@@ -9,6 +9,7 @@ import com.nikol.domain.use_case.LoginUseCase
 import com.nikol.domain.use_case.LogoutUseCase
 import com.nikol.domain.use_case.SignupUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,27 +34,26 @@ class AuthStateViewModel @Inject constructor(
     private fun checkAuthStatus() {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
-            val credentials = getCurrentUserUseCase.invoke()
-            if (credentials != null) {
-                when (val result = loginUseCase.invoke(credentials.first, credentials.second)) {
-                    is RemoteObtainingLoginResult.Success -> {
-                        _authState.value = AuthState.Authenticated(result.currentToken)
-                    }
-
-                    is RemoteObtainingLoginResult.LoginError -> {
-                        logoutUseCase.invoke()
-                        _authState.value = AuthState.Unauthenticated
-                    }
-
-                    is RemoteObtainingLoginResult.NetworkError -> {
-                        _authState.value = AuthState.Error(result.message)
-                    }
-
-                    else -> {}
-                }
-            } else {
-                _authState.value = AuthState.Unauthenticated
-            }
+            delay(2000)//для теста
+            _authState.value = AuthState.Authenticated("")
+//            val credentials = getCurrentUserUseCase.invoke()
+//            if (credentials != null) {
+//                when (val result = loginUseCase.invoke(credentials.first, credentials.second)) {
+//                    is RemoteObtainingLoginResult.Success -> {
+//                        _authState.value = AuthState.Authenticated(result.currentToken)
+//                    }
+//                    is RemoteObtainingLoginResult.LoginError -> {
+//                        logoutUseCase.invoke()
+//                        _authState.value = AuthState.Unauthenticated
+//                    }
+//                    is RemoteObtainingLoginResult.NetworkError -> {
+//                        _authState.value = AuthState.Error(result.message)
+//                    }
+//                    else -> {}
+//                }
+//            } else {
+//                _authState.value = AuthState.Unauthenticated
+//            }
         }
     }
 
@@ -64,15 +64,12 @@ class AuthStateViewModel @Inject constructor(
                 is RemoteObtainingLoginResult.Success -> {
                     _authState.value = AuthState.Authenticated(result.currentToken)
                 }
-
                 is RemoteObtainingLoginResult.LoginError -> {
                     _authState.value = AuthState.Error(result.message)
                 }
-
                 is RemoteObtainingLoginResult.NetworkError -> {
                     _authState.value = AuthState.Error(result.message)
                 }
-
                 else -> {}
             }
         }
@@ -85,15 +82,12 @@ class AuthStateViewModel @Inject constructor(
                 is RemoteObtainingCreateUser.Success -> {
                     _authState.value = AuthState.Authenticated(result.currentToken)
                 }
-
                 is RemoteObtainingCreateUser.SignupError -> {
                     _authState.value = AuthState.Error(result.message)
                 }
-
                 is RemoteObtainingCreateUser.NetworkError -> {
                     _authState.value = AuthState.Error(result.message)
                 }
-
                 else -> {}
             }
         }
@@ -102,7 +96,7 @@ class AuthStateViewModel @Inject constructor(
     fun logout() {
         viewModelScope.launch {
             logoutUseCase.invoke()
-            _authState.value = AuthState.Unauthenticated
+            _authState.value = AuthState.Unauthenticated // Переключаем состояние
         }
     }
 }

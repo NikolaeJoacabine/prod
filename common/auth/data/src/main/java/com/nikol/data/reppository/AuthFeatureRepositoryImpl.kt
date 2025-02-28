@@ -11,9 +11,12 @@ class AuthFeatureRepositoryImpl(
     private val localRepository: LocalAuthFeaturesRepository
 ) : AuthFeatureRepository {
 
+    private var accessToken: String? = null
+
     override suspend fun signup(email: String, password: String): RemoteObtainingCreateUser {
         val result = remoteRepository.signup(email, password)
         if (result is RemoteObtainingCreateUser.Success) {
+            accessToken = result.currentToken
             localRepository.saveCredentials(email, password)
         }
         return result
@@ -22,16 +25,20 @@ class AuthFeatureRepositoryImpl(
     override suspend fun login(email: String, password: String): RemoteObtainingLoginResult {
         val result = remoteRepository.login(email, password)
         if (result is RemoteObtainingLoginResult.Success) {
+            accessToken = result.currentToken
             localRepository.saveCredentials(email, password)
         }
         return result
     }
 
     override suspend fun logout() {
+        accessToken = null
         localRepository.clearCredentials()
     }
 
     override suspend fun getCurrentUser(): Pair<String, String>? {
         return localRepository.getCredentials()
     }
+
+    override fun getToken(): String? = accessToken
 }

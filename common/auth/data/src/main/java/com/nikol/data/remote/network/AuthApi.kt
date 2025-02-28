@@ -29,5 +29,4 @@ interface AuthApi {
         @Header("Login") encryptedLogin: String,
         @Header("Password") encryptedPassword: String
     ): LoginResponse
-
 }

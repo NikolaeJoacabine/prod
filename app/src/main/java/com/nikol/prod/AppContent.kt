@@ -147,14 +147,6 @@ fun AuthScreen(
             }
         }
     }
-
-    LaunchedEffect(authState) {
-        if (authState is AuthState.Authenticated) {
-            navController.navigate(featureNavigationApis.first().navigationRoute) {
-                popUpTo("auth") { inclusive = true }
-            }
-        }
-    }
 }
 
 @Composable
