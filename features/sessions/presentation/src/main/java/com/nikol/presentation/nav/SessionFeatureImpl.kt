@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.nikol.navigation.FeatureApi
+import com.nikol.presentation.screens.add.SessionScreen
 import javax.inject.Inject
 
 
@@ -27,8 +28,8 @@ class SessionFeatureImpl @Inject constructor() : FeatureApi {
             composable(
                 route = SessionsFeatureScreens.SessionsScreen.route
             ) {
-                Text("Session")
-//                SessionScreen(navController = navController)
+//                Text("Session")
+                SessionScreen()
             }
         }
     }

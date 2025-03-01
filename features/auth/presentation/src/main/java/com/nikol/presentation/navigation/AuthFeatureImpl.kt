@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.nikol.navigation.FeatureApi
+import com.nikol.presentation.screens.ProfileScreen
 import javax.inject.Inject
 
 
@@ -27,7 +28,7 @@ class AuthFeatureImpl @Inject constructor() : FeatureApi {
             composable(
                 route = AuthFeatureScreens.ProfileScreen.route
             ) {
-               Text("i here")
+               ProfileScreen(userName = "UserName", 1, 1)
             }
         }
     }
