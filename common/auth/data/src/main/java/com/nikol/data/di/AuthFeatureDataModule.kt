@@ -1,7 +1,6 @@
 package com.nikol.data.di
 
 import android.content.Context
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.nikol.data.local.repository.LocalAuthFeaturesRepository
 import com.nikol.data.local.repository.LocalAuthFeaturesRepositoryImpl
 import com.nikol.data.local.storage.UserStorage
@@ -15,9 +14,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import javax.inject.Singleton
 
@@ -25,18 +21,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AuthFeatureDataModule {
-
-    private val json = Json {
-        ignoreUnknownKeys = true
-    }
-
-    @Provides
-    @Singleton
-    fun provideRetrofit(client: OkHttpClient): Retrofit = Retrofit.Builder()
-        .baseUrl("http://prod-team-40-jpqgdebk.final.prodcontest.ru:80/")
-        .client(client)
-        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-        .build()
 
     @Provides
     @Singleton

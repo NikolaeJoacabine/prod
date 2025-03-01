@@ -8,17 +8,13 @@ import retrofit2.http.POST
 
 interface AuthApi {
 
-    @POST("/auth/login")
-    suspend fun requestEncryptionKey(): EncryptionKeyResponse
+
 
     @POST("auth/login")
     suspend fun login(
         @Header("Login") encryptedLogin: String,
         @Header("Password") encryptedPassword: String
     ): LoginResponse
-
-    @POST("/auth/register")
-    suspend fun requestEncryptionKeyFromSignup(): EncryptionKeyResponse
 
     @POST("auth/register")
     suspend fun signup(

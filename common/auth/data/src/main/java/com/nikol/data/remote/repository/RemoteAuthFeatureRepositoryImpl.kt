@@ -15,19 +15,8 @@ class RemoteAuthFeatureRepositoryImpl(
 
     override suspend fun signup(login: String, password: String): RemoteObtainingCreateUser {
         return try {
-            Log.d("AuthDebug", "Шаг 1: Получение ключа")
-            val keyResponse = authApi.requestEncryptionKeyFromSignup()
-            Log.d("AuthDebug", "Шаг 2: Ключ получен: ${keyResponse.key}")
-            val encryptionKey = keyResponse.key
-            Log.d("AuthDebug", "Шаг 3: Шифрование login=$login")
-            val encryptedLogin = xorEncrypt(login, encryptionKey)
-            Log.d("AuthDebug", "Шаг 4: Зашифрованный login=$encryptedLogin")
-            Log.d("AuthDebug", "Шаг 5: Шифрование password=$password")
-            val encryptedPassword = xorEncrypt(password, encryptionKey)
-            Log.d("AuthDebug", "Шаг 6: Зашифрованный password=$encryptedPassword")
-            Log.d("AuthDebug", "Шаг 7: Отправка запроса")
-            val response = authApi.signup(encryptedLogin, encryptedPassword)
-            Log.d("AuthDebug", "Шаг 8: Ответ получен: $response")
+            val response = authApi.signup(login, password)
+            Log.d("AuthDebug", "Шаг 1: Ответ получен: $response")
             RemoteObtainingCreateUser.Success(response.accessToken)
         } catch (e: SerializationException) {
             Log.e("AuthError", "Ошибка десериализации: ${e.message}")
@@ -44,23 +33,11 @@ class RemoteAuthFeatureRepositoryImpl(
             RemoteObtainingCreateUser.NetworkError("Неизвестная ошибка: ${e.message}")
         }
     }
-
-    // Аналогично для login
     override suspend fun login(login: String, password: String): RemoteObtainingLoginResult {
         return try {
-            Log.d("AuthDebug", "Шаг 1: Получение ключа")
-            val keyResponse = authApi.requestEncryptionKey()
-            Log.d("AuthDebug", "Шаг 2: Ключ получен: ${keyResponse.key}")
-            val encryptionKey = keyResponse.key
-            Log.d("AuthDebug", "Шаг 3: Шифрование login=$login")
-            val encryptedLogin = xorEncrypt(login, encryptionKey)
-            Log.d("AuthDebug", "Шаг 4: Зашифрованный login=$encryptedLogin")
-            Log.d("AuthDebug", "Шаг 5: Шифрование password=$password")
-            val encryptedPassword = xorEncrypt(password, encryptionKey)
-            Log.d("AuthDebug", "Шаг 6: Зашифрованный password=$encryptedPassword")
-            Log.d("AuthDebug", "Шаг 7: Отправка запроса")
-            val response = authApi.login(encryptedLogin, encryptedPassword)
-            Log.d("AuthDebug", "Шаг 8: Ответ получен: $response")
+
+            val response = authApi.login(login, password)
+            Log.d("AuthDebug", "Шаг 1: Ответ получен: $response")
             RemoteObtainingLoginResult.Success(response.accessToken)
         } catch (e: SerializationException) {
             Log.e("AuthError", "Ошибка десериализации: ${e.message}")
@@ -76,16 +53,5 @@ class RemoteAuthFeatureRepositoryImpl(
             Log.e("AuthError", "Неизвестная ошибка: ${e.message}")
             RemoteObtainingLoginResult.NetworkError("Неизвестная ошибка: ${e.message}")
         }
-    }
-
-
-    private fun xorEncrypt(input: String, key: String): String {
-        val dataBytes = input.toByteArray()
-        val keyBytes = key.toByteArray()
-        val result = ByteArray(dataBytes.size)
-        for (i in dataBytes.indices) {
-            result[i] = (dataBytes[i].toInt() xor keyBytes[i % keyBytes.size].toInt()).toByte()
-        }
-        return Base64.getEncoder().encodeToString(result)
     }
 }
