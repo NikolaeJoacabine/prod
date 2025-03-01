@@ -14,15 +14,15 @@ import dagger.hilt.android.components.ViewModelComponent
 object SessionScreenModule {
 
     @Provides
-    fun provideAddUserIntoSessionUseCase(mainFeatureRepository: SessionFeatureRepository): AddUserIntoSessionUseCase =
-        AddUserIntoSessionUseCase(mainFeatureRepository)
+    fun provideAddUserIntoSessionUseCase(sessionFeatureRepository: SessionFeatureRepository): AddUserIntoSessionUseCase =
+        AddUserIntoSessionUseCase(sessionFeatureRepository)
 
     @Provides
-    fun provideGetLikedMoviesUseCase(mainFeatureRepository: SessionFeatureRepository): GetLikedMoviesUseCase =
-        GetLikedMoviesUseCase(mainFeatureRepository)
+    fun provideGetLikedMoviesUseCase(sessionFeatureRepository: SessionFeatureRepository): GetLikedMoviesUseCase =
+        GetLikedMoviesUseCase(sessionFeatureRepository)
 
     @Provides
-    fun provideGetCommonGenresUseCase(mainFeatureRepository: SessionFeatureRepository): GetCommonGenresUseCase =
-        GetCommonGenresUseCase(mainFeatureRepository)
+    fun provideGetCommonGenresUseCase(sessionFeatureRepository: SessionFeatureRepository): GetCommonGenresUseCase =
+        GetCommonGenresUseCase(sessionFeatureRepository)
 
 }

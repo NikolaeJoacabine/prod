@@ -1,6 +1,6 @@
 package com.nikol.domain.model
 
-data class Movie(
+data class SessionMovie(
     val url: String,
     val urlImage: String,
     val description: String,

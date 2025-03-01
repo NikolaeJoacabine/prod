@@ -2,6 +2,7 @@ package com.nikol.data.repository
 
 import com.nikol.data.remote.repository.RemoteSessionRepository
 import com.nikol.domain.repository.SessionFeatureRepository
+import com.nikol.domain.results.RemoteObtainingGenres
 import com.nikol.domain.results.RemoteObtainingMovies
 import com.nikol.domain.results.RemoteObtainingSession
 
@@ -13,6 +14,10 @@ class SessionFeatureRepositoryImpl(
     }
 
     override suspend fun getLikedMovies(): RemoteObtainingMovies {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getCommonGenres(): RemoteObtainingGenres {
         TODO("Not yet implemented")
     }
 }

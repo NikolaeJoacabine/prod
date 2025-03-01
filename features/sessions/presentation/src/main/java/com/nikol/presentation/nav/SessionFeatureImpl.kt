@@ -27,7 +27,8 @@ class SessionFeatureImpl @Inject constructor() : FeatureApi {
             composable(
                 route = SessionsFeatureScreens.SessionsScreen.route
             ) {
-                Text("Sessions")
+                Text("Session")
+//                SessionScreen(navController = navController)
             }
         }
     }

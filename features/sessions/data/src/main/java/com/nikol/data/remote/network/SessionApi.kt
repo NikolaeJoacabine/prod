@@ -1,8 +1,8 @@
 package com.nikol.data.remote.network
 
-import com.nikol.domain.model.Movie
+import com.nikol.data.remote.models.SessionMovieDTO
 
 interface SessionApi {
     suspend fun addUserIntoSession()
-    suspend fun getLikedMovies(): List<Movie>
+    suspend fun getLikedMovies(): List<SessionMovieDTO>
 }

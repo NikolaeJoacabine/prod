@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class AddViewModel @Inject constructor(
+class SessionsViewModel @Inject constructor(
     private val addMovieUseCase: AddUserIntoSessionUseCase,
     private val getLikedMoviesUseCase: GetLikedMoviesUseCase,
     private val getCommonGenresUseCase: GetCommonGenresUseCase
