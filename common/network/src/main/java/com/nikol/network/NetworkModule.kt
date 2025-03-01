@@ -26,6 +26,7 @@ object NetworkModule {
     @Provides
     fun provideOkHttpClient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
+
     ): OkHttpClient =
         OkHttpClient.Builder()
             .connectionPool(ConnectionPool(15, 5, TimeUnit.MINUTES))
@@ -34,4 +35,5 @@ object NetworkModule {
             .writeTimeout(30, TimeUnit.SECONDS)
             .addInterceptor(httpLoggingInterceptor)
             .build()
+
 }

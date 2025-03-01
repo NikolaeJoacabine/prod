@@ -22,6 +22,7 @@
             <option value="$PROJECT_DIR$/features/auth/presentation" />
             <option value="$PROJECT_DIR$/features/main" />
             <option value="$PROJECT_DIR$/features/main/data" />
+            <option value="$PROJECT_DIR$/features/main/domain" />
             <option value="$PROJECT_DIR$/features/main/presentation" />
           </set>
         </option>
