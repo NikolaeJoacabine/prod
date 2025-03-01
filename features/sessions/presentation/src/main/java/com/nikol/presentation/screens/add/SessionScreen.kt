@@ -58,7 +58,7 @@ fun SessionScreen() {
             .background(Color(0xFFF5F5F5)), // Серый фон
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(200.dp))
         Text(
             text = "Поиск фильма в паре",
             style = MaterialTheme.typography.headlineSmall,
@@ -122,7 +122,7 @@ fun Bubble(text: String, size: Dp, offsetX: Dp, offsetY: Dp, onClick: () -> Unit
             .offset(x = offsetX, y = offsetY) // Расположение пузырька
             .clip(CircleShape) // Обрезаем для круглой формы
             .background(if (isPressed) pressedColor else defaultColor, CircleShape) // Меняем цвет в зависимости от состояния
-            .border(1.dp, Color(0xFF744EDC), CircleShape) // Граница пузырька
+            .border(2.dp, Color(0xFF744EDC), CircleShape) // Граница пузырька
             .clickable(
                 onClick = {
                     isPressed = !isPressed // Переключение состояния
