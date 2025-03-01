@@ -1,16 +1,26 @@
 package com.nikol.presentation.screens.add
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
@@ -29,8 +39,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,84 +52,90 @@ import com.nikol.domain.model.Movie
 
 @Composable
 fun SessionScreen() {
-    // Определение стилей
-    val purpleColor = Color(0xFF6A5BCE)
-    val textColor = Color(0xFF000000)
-    var login = ""
-
-    // Контент экрана
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .background(Color(0xFFF5F5F5)), // Серый фон
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Заголовок
+        Spacer(modifier = Modifier.height(50.dp))
         Text(
             text = "Поиск фильма в паре",
-            color = textColor,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
+            style = MaterialTheme.typography.headlineSmall,
+            color = Color.Black
         )
-
-//        // Поле ввода логина второго человека
-//        TextField(
-//            value = "",
-//            onValueChange = {},
-//            placeholder = { Text(text = "Логин второго человека") },
-//            modifier = Modifier.fillMaxWidth(),
-//            colors = TextField(
-//                value = yourText,
-//                onValueChange = { yourText = it },
-//                colors = TextFieldDefaults.colors() // По умолчанию
-//            )
-//        )
-
+        Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
-            value = login,
-            onValueChange = { login = it },
+            value = "",
+            onValueChange = {},
             label = { Text("Логин второго человека") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp),
-            singleLine = true,
-            shape = RoundedCornerShape(15.dp)
+                .padding(horizontal = 16.dp)
         )
-
-        // Ряд с жанрами
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            GenreButton(text = "фантастика", color = purpleColor)
-            GenreButton(text = "драма", color = purpleColor)
-            GenreButton(text = "боевик", color = purpleColor)
-        }
-
-        // Кнопка "Добавить"
+        Spacer(modifier = Modifier.height(24.dp))
+        BubbleLayout()
+        Spacer(modifier = Modifier.height(24.dp))
         Button(
-            onClick = { /* Действие по добавлению */ },
+            onClick = { },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
-            colors = ButtonDefaults.buttonColors(purpleColor)
+                .padding(vertical = 16.dp, horizontal = 16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF744EDC)),
+            shape = RoundedCornerShape(12.dp)
         ) {
-            Text(text = "Добавить", color = Color.White)
+            Text("Посмотреть варианты", color = Color.White)
         }
     }
 }
 
 @Composable
-fun GenreButton(text: String, color: Color) {
-    Button(
-        onClick = { /* Действие по выбору жанра */ },
-        modifier = Modifier.padding(horizontal = 4.dp),
-        colors = ButtonDefaults.buttonColors( Color.Transparent, contentColor = color),
-        border = BorderStroke(1.dp, color)
+fun BubbleLayout() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp) // Задаем высоту для размещения пузырьков
     ) {
-        Text(text = text)
+        Bubble(text = "драма", size = 80.dp, offsetX = 40.dp, offsetY = 40.dp)
+        Bubble(text = "комедия", size = 90.dp, offsetX = 140.dp, offsetY = 0.dp)
+        Bubble(text = "триллер", size = 90.dp, offsetX = 180.dp, offsetY = 110.dp)
+        Bubble(text = "боевик", size = 70.dp, offsetX = 260.dp, offsetY = 40.dp)
+        Bubble(text = "фантастика", size = 110.dp, offsetX = (40).dp, offsetY = 150.dp)
+        Bubble(text = "детектив", size = 80.dp, offsetX = 300.dp, offsetY = 160.dp)
+        Bubble(text = "ужас", size = 50.dp, offsetX = 50.dp, offsetY = 270.dp)
+        Bubble(text = "романтика", size = 100.dp, offsetX = 150.dp, offsetY = 220.dp)
+    }
+}
+
+@Composable
+fun Bubble(text: String, size: Dp, offsetX: Dp, offsetY: Dp, onClick: () -> Unit = {}) {
+    // Цвета для обычного и нажатого состояния
+    val defaultColor = Color(0x99AC8EFF)
+    val pressedColor = Color(0xFF744EDC)
+
+    // Состояние для отслеживания нажатия
+    var isPressed by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier
+            .size(size) // Устанавливаем размер пузырька
+            .offset(x = offsetX, y = offsetY) // Расположение пузырька
+            .clip(CircleShape) // Обрезаем для круглой формы
+            .background(if (isPressed) pressedColor else defaultColor, CircleShape) // Меняем цвет в зависимости от состояния
+            .border(1.dp, Color(0xFF744EDC), CircleShape) // Граница пузырька
+            .clickable(
+                onClick = {
+                    isPressed = !isPressed // Переключение состояния
+                    onClick.invoke() // Вызов переданной функции
+                }
+            ),
+        contentAlignment = Alignment.Center // Центрируем текст
+    ) {
+        Text(
+            text = text,
+            color = Color.White,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center
+        )
     }
 }
