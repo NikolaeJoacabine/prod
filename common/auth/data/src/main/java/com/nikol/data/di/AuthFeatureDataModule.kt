@@ -6,7 +6,6 @@ import com.nikol.data.local.repository.LocalAuthFeaturesRepository
 import com.nikol.data.local.repository.LocalAuthFeaturesRepositoryImpl
 import com.nikol.data.local.storage.UserStorage
 import com.nikol.data.remote.network.AuthApi
-import com.nikol.data.remote.network.interceptor.AuthInterceptor
 import com.nikol.data.remote.repository.RemoteAuthFeatureRepository
 import com.nikol.data.remote.repository.RemoteAuthFeatureRepositoryImpl
 import com.nikol.data.reppository.AuthFeatureRepositoryImpl
@@ -71,14 +70,5 @@ object AuthFeatureDataModule {
         localAuthFeaturesRepository: LocalAuthFeaturesRepository
     ): AuthFeatureRepository {
         return AuthFeatureRepositoryImpl(remoteAuthFeatureRepository, localAuthFeaturesRepository)
-    }
-
-    @Provides
-    @Singleton
-    fun provideAuthInterceptor(
-        @ApplicationContext context: Context,
-        authRepository: AuthFeatureRepository
-    ): AuthInterceptor {
-        return AuthInterceptor(context, authRepository)
     }
 }
