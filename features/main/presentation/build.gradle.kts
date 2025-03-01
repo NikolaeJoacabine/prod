@@ -62,4 +62,5 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(project(":common:navigation"))
     implementation(project(":features:main:domain"))
+    implementation(project(":features:main:data"))
 }

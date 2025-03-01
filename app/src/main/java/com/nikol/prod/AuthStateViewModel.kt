@@ -40,7 +40,7 @@ class AuthStateViewModel @Inject constructor(
             if (credentials != null) {
                 when (val result = loginUseCase.invoke(credentials.first, credentials.second)) {
                     is RemoteObtainingLoginResult.Success -> {
-                        _authState.value = AuthState.Authenticated(result.currentToken)
+                        _authState.value = AuthState.Authenticated
                     }
                     is RemoteObtainingLoginResult.LoginError -> {
                         logoutUseCase.invoke()
@@ -62,7 +62,7 @@ class AuthStateViewModel @Inject constructor(
             _authState.value = AuthState.Loading
             when (val result = loginUseCase.invoke(email, password)) {
                 is RemoteObtainingLoginResult.Success -> {
-                    _authState.value = AuthState.Authenticated(result.currentToken)
+                    _authState.value = AuthState.Authenticated
                 }
                 is RemoteObtainingLoginResult.LoginError -> {
                     _authState.value = AuthState.Error(result.message)
@@ -80,7 +80,7 @@ class AuthStateViewModel @Inject constructor(
             _authState.value = AuthState.Loading
             when (val result = signupUseCase.invoke(email, password)) {
                 is RemoteObtainingCreateUser.Success -> {
-                    _authState.value = AuthState.Authenticated(result.currentToken)
+                    _authState.value = AuthState.Authenticated
                 }
                 is RemoteObtainingCreateUser.SignupError -> {
                     _authState.value = AuthState.Error(result.message)
@@ -104,7 +104,7 @@ class AuthStateViewModel @Inject constructor(
 sealed class AuthState {
     data object Initial : AuthState()
     data object Loading : AuthState()
-    data class Authenticated(val token: String) : AuthState()
+    data object Authenticated : AuthState()
     data object Unauthenticated : AuthState()
     data class Error(val message: String) : AuthState()
 }

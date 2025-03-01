@@ -42,6 +42,8 @@ dependencies {
     implementation(libs.material)
     implementation(project(":common:auth:domain"))
     implementation(project(":common:network"))
+    implementation(project(":features:main:domain"))
+    implementation(project(":common:auth:data"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
