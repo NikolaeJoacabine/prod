@@ -1,9 +1,0 @@
-C:\Users\User18\AndroidStudioProjects\prod\features\sessions\data\src\main\java\com\nikol\data\repository\SessionFeatureRepositoryImpl.kt
-C:\Users\User18\AndroidStudioProjects\prod\features\sessions\data\src\main\java\com\nikol\data\util\Mapper.kt
-C:\Users\User18\AndroidStudioProjects\prod\features\sessions\data\src\main\java\com\nikol\data\remote\models\SessionDTO.kt
-C:\Users\User18\AndroidStudioProjects\prod\features\sessions\data\src\main\java\com\nikol\data\remote\models\GenreDTO.kt
-C:\Users\User18\AndroidStudioProjects\prod\features\sessions\data\src\main\java\com\nikol\data\remote\repository\RemoteSessionRepository.kt
-C:\Users\User18\AndroidStudioProjects\prod\features\sessions\data\src\main\java\com\nikol\data\remote\models\SessionMovieDTO.kt
-C:\Users\User18\AndroidStudioProjects\prod\features\sessions\data\src\main\java\com\nikol\data\di\SessionFeatureModule.kt
-C:\Users\User18\AndroidStudioProjects\prod\features\sessions\data\src\main\java\com\nikol\data\remote\network\SessionApi.kt
-C:\Users\User18\AndroidStudioProjects\prod\features\sessions\data\src\main\java\com\nikol\data\remote\repository\RemoteSessionRepositoryImpl.kt

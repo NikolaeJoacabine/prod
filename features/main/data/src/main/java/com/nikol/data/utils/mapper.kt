@@ -4,7 +4,6 @@ import com.nikol.data.remote.models.MovieDTO
 import com.nikol.domain.model.Movie
 
 
-
 fun MovieDTO.toDomain() =
     Movie(
         id = this.id ?: 0,
