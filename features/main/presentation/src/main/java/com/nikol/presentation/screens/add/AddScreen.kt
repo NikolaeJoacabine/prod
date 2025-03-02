@@ -662,6 +662,8 @@ fun ItemMoveSearch(item: Movie, onClick: () -> Unit) {
                 )
                 Row(
                     Modifier.padding(top = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "Жанр не указан",

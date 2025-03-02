@@ -3,7 +3,6 @@ package com.nikol.presentation.nav
 import android.net.Uri
 import com.nikol.domain.model.Movie
 import org.json.JSONObject
-import java.net.URLEncoder
 
 sealed class LibraryFeatureScreens(val route: String) {
     data object LibraryScreen : LibraryFeatureScreens(route = "library_screen")
