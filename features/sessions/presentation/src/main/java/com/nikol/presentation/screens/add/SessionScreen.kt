@@ -98,7 +98,7 @@ fun SessionScreen(viewModel: SessionsViewModel = hiltViewModel()) {
             ModalBottomSheet(
                 onDismissRequest = { showBottomSheet = false }, // Закрытие листа
                 sheetState = sheetState,
-                containerColor = Color.White,
+                containerColor = Color(0xFFF2F4F7),
                 tonalElevation = 8.dp
             ) {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -179,22 +179,6 @@ fun SessionScreen(viewModel: SessionsViewModel = hiltViewModel()) {
                     lineHeight = 20.sp
                 ),
             )
-            IconButton(
-                onClick = {  },
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(
-                        color = Color(0xFF7A5AF8),
-                        shape = CircleShape
-                    )
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Поиск",
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
         }
         Spacer(modifier = Modifier.height(24.dp))
 
