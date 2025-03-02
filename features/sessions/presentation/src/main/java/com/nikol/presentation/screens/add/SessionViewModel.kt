@@ -2,6 +2,7 @@ package com.nikol.presentation.screens.add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nikol.domain.model.MovieSession
 import com.nikol.domain.results.RemoteObtainingGenres
 import com.nikol.domain.results.RemoteObtainingMovies
 import com.nikol.domain.results.RemoteObtainingSession
@@ -33,12 +34,46 @@ class SessionsViewModel @Inject constructor(
         MutableStateFlow<RemoteObtainingGenres>(RemoteObtainingGenres.Neutral)
     val genresState = _genresState.asStateFlow()
 
-    fun addUser() {
+    fun addUser(login: String, genres: List<String>) {
         viewModelScope.launch {
             _sessionState.value = RemoteObtainingSession.Loading
-            addMovieUseCase.invoke().let {
+            addMovieUseCase.invoke(login, genres).let {
                 _sessionState.value = it
             }
+//            _sessionState.value = RemoteObtainingSession.Success(listOf(
+//                MovieSession(
+//                    id = 0,
+//                    title = "Фильм 1",
+//                    year = 1990,
+//                    description = "Desc 1",
+//                    imageUrl = "https://kinopoiskapiunofficial.tech/images/posters/kp/50510.jpg",
+//                    rating = 5.0
+//                ),
+//                MovieSession(
+//                    id = 1,
+//                    title = "Фильм 2",
+//                    year = 1990,
+//                    description = "Desc 1",
+//                    imageUrl = "https://kinopoiskapiunofficial.tech/images/posters/kp/50510.jpg",
+//                    rating = 5.0
+//                ),
+//                MovieSession(
+//                    id = 2,
+//                    title = "Фильм 3",
+//                    year = 1990,
+//                    description = "Desc 1",
+//                    imageUrl = "https://kinopoiskapiunofficial.tech/images/posters/kp/50510.jpg",
+//                    rating = 5.0
+//                ),
+//                MovieSession(
+//                    id = 3,
+//                    title = "Фильм 4",
+//                    year = 1990,
+//                    description = "Desc 1",
+//                    imageUrl = "https://kinopoiskapiunofficial.tech/images/posters/kp/50510.jpg",
+//                    rating = 5.0
+//                )
+//            ))
         }
     }
 
