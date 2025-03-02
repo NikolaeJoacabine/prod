@@ -2,9 +2,12 @@ package com.nikol.data.repository
 
 import android.util.Log
 import com.nikol.data.remote.repository.RemoteLibraryRepository
+import com.nikol.data.utils.toEntity
+import com.nikol.domain.model.Movie
 import com.nikol.domain.repository.MainFeatureRepository
 import com.nikol.domain.results.RemoteObtainingLibrary
 import com.nikol.domain.results.RemoteObtainingLibraryActionResult
+import com.nikol.domain.results.RemoteObtainingMovie
 
 class MainFeatureRepositoryImpl(
     private val remoteLibraryRepository: RemoteLibraryRepository
@@ -28,5 +31,9 @@ class MainFeatureRepositoryImpl(
 
     override suspend fun searchMoviesWithApi(str: String): RemoteObtainingLibrary {
         return remoteLibraryRepository.searchFilms(str)
+    }
+
+    override suspend fun getDetailMovie(movie: Movie): RemoteObtainingMovie {
+        return remoteLibraryRepository.getDetailMovie(movie.toEntity())
     }
 }

@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Button
@@ -22,11 +23,13 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -54,6 +57,10 @@ import com.nikol.presentation.nav.LibraryFeatureScreens
 fun LibraryScreen(
     navController: NavController, viewModel: LibraryViewModel = hiltViewModel()
 ) {
+
+    LaunchedEffect(Unit) {
+        viewModel.getLibrary()
+    }
     val state by viewModel.libraryState.collectAsState()
     Column(
         modifier = Modifier
@@ -116,9 +123,23 @@ fun LibraryScreen(
                         }
                     }
                 } else {
-                    LazyColumn {
-                        items(currentState.library) { movie ->
-                            ItemMove(movie)
+                    Box(
+                        Modifier.fillMaxSize()
+                    ) {
+                        LazyColumn {
+                            items(currentState.library) { movie ->
+                                ItemMove(movie)
+                            }
+                        }
+                        FloatingActionButton(
+                            onClick = {
+                                navController.navigate(LibraryFeatureScreens.AddScreen.route)
+                            },
+                            containerColor = Color(0xFF7A5AF8),
+                            contentColor = Color.White,
+                            modifier = Modifier.align(Alignment.BottomEnd)
+                        ) {
+                            Icon(imageVector = Icons.Default.Add, contentDescription = null)
                         }
                     }
                 }
@@ -136,6 +157,7 @@ fun LibraryScreen(
                     )
                 }
             }
+
             else -> {}
         }
     }
@@ -169,7 +191,7 @@ fun ItemMove(item: Movie) {
                 )
 
                 IconButton(
-                    onClick = { /* TODO */ },
+                    onClick = { },
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(12.dp)
@@ -186,7 +208,7 @@ fun ItemMove(item: Movie) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp) // Уменьшено с 16.dp
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -238,7 +260,7 @@ fun ItemMove(item: Movie) {
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(top = 4.dp)
-                    ) // Уменьшено с 6.dp
+                    )
                 }
 
                 Text(
@@ -247,7 +269,7 @@ fun ItemMove(item: Movie) {
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(top = 4.dp)
-                ) // Уменьшено с 8.dp
+                )
 
                 item.description?.let {
                     Text(
@@ -258,7 +280,7 @@ fun ItemMove(item: Movie) {
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.padding(top = 8.dp)
-                    ) // Уменьшено с 12.dp
+                    )
                 }
             }
         }

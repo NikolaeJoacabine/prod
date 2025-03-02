@@ -36,4 +36,14 @@ interface LibraryApi {
         @Header("Authorization") authToken: String
     ): List<MovieDTO>
 
+    @POST("/watchlist/add/{film_id}")
+    suspend fun addFilm(
+        @Path("film_id") id: Int,
+        @Header("Authorization") authToken: String
+    )
+
+    @POST("/films/{film_id}")
+    suspend fun getFilm(@Path("film_id") id: Int) : MovieDTO
+
+
 }

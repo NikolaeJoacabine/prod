@@ -1,11 +1,13 @@
 package com.nikol.data.remote.repository
 
 import android.util.Log
+import com.nikol.data.remote.models.MovieDTO
 import com.nikol.data.remote.network.LibraryApi
 import com.nikol.data.utils.toDomain
 import com.nikol.domain.repository.AuthFeatureRepository
 import com.nikol.domain.results.RemoteObtainingLibrary
 import com.nikol.domain.results.RemoteObtainingLibraryActionResult
+import com.nikol.domain.results.RemoteObtainingMovie
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -27,8 +29,13 @@ class RemoteLibraryRepositoryImpl(
         }
     }
 
-    override suspend fun addInLibrary(id : Int): RemoteObtainingLibraryActionResult {
-        TODO("Not yet implemented")
+    override suspend fun addInLibrary(id: Int): RemoteObtainingLibraryActionResult {
+        return try {
+            val response = libraryApi.addFilm(id, authToken)
+            RemoteObtainingLibraryActionResult.Success
+        } catch (e: Exception) {
+            RemoteObtainingLibraryActionResult.Error("${e.message}")
+        }
     }
 
     override suspend fun deleteMovie(): RemoteObtainingLibraryActionResult {
@@ -65,6 +72,15 @@ class RemoteLibraryRepositoryImpl(
         } catch (e: Exception) {
             Log.e("Search", "Error: ${e.message}")
             RemoteObtainingLibrary.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun getDetailMovie(movieDTO: MovieDTO): RemoteObtainingMovie {
+        return try {
+            val response = libraryApi.getFilm(movieDTO.id ?: 0)
+            RemoteObtainingMovie.Success(response.toDomain())
+        } catch (e: Exception) {
+            RemoteObtainingMovie.Error(e.message.toString())
         }
     }
 }
