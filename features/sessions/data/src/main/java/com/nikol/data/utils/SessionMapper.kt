@@ -1,9 +1,9 @@
-package com.nikol.data.util
+package com.nikol.data.utils
 
 import com.nikol.data.remote.models.SessionMovieDTO
 import com.nikol.domain.model.MovieSession
 
-fun SessionMovieDTO.toDomain() =
+fun SessionMovieDTO.toDDomain() =
     MovieSession(
         id = this.id ?: 0,
         title = this.title ?: "",

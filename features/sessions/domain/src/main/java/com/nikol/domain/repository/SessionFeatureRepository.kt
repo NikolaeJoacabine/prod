@@ -5,7 +5,7 @@ import com.nikol.domain.results.RemoteObtainingMovies
 import com.nikol.domain.results.RemoteObtainingSession
 
 interface SessionFeatureRepository {
-    suspend fun addUserIntoSession(): RemoteObtainingSession
+    suspend fun addUserIntoSession(login: String, genres: List<String>): RemoteObtainingSession
     suspend fun getLikedMovies(): RemoteObtainingMovies
     suspend fun getCommonGenres(): RemoteObtainingGenres
 }
