@@ -1,11 +1,12 @@
 package com.nikol.data.utils
 
 import com.nikol.data.remote.models.MovieDTO
-import com.nikol.domain.model.SessionMovie
+import com.nikol.domain.model.Movie
+
 
 
 fun MovieDTO.toDomain() =
-    SessionMovie(
+    Movie(
         id = this.id ?: 0,
         title = this.title ?: "",
         year = this.year ?: 0,
