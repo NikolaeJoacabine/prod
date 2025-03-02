@@ -41,21 +41,20 @@ class LibraryFeatureImpl @Inject constructor() : FeatureApi {
                 AddScreen(navController)
             }
 
-            composable(
-                route = LibraryFeatureScreens.DetailScreen.route,
-                arguments = listOf(
-                    navArgument("movieJson") { type = NavType.StringType }
-                )
-            ) { backStackEntry ->
-                val movieJson = backStackEntry.arguments?.getString("movieJson")
-                val movie = try {
-                    LibraryFeatureScreens.DetailScreen.parseArguments(movieJson)
-                } catch (e: Exception) {
-                    // Обработка ошибок
-                    Movie(0, "Error", description = "", imageUrl = "")
-                }
-                DetailScreen(navController, movie)
-            }
+//            composable(
+//                route = LibraryFeatureScreens.DetailScreen.route,
+//                arguments = listOf(
+//                    navArgument("movieJson") { type = NavType.StringType }
+//                )
+//            ) { backStackEntry ->
+//                val movieJson = backStackEntry.arguments?.getString("movieJson")
+//                val movie = try {
+//                    LibraryFeatureScreens.DetailScreen.parseArguments(movieJson)
+//                } catch (e: Exception) {
+//                    Movie(0, "Error", description = "", imageUrl = "")
+//                }
+//                DetailScreen(navController, movie)
+//            }
         }
     }
 }
