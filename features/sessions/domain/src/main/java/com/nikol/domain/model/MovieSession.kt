@@ -1,6 +1,6 @@
 package com.nikol.domain.model
 
-data class Movie(
+data class MovieSession(
     val id: Int,
     val title: String,
     val year: Int? = null,
