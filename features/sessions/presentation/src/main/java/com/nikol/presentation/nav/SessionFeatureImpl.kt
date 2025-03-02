@@ -1,19 +1,20 @@
-package com.nikol.presentation.navigation
+package com.nikol.presentation.nav
 
+import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.nikol.navigation.FeatureApi
-import com.nikol.presentation.screens.profile.ProfileScreen
+import com.nikol.presentation.screens.add.SessionScreen
 import javax.inject.Inject
 
 
-class AuthFeatureImpl @Inject constructor() : FeatureApi {
+class SessionFeatureImpl @Inject constructor() : FeatureApi {
 
-    override val navigationRoute = AuthFeatureScreens.NAVIGATION_ROUTE
-    override val startDestination = AuthFeatureScreens.startScreenRoute
+    override val navigationRoute = SessionsFeatureScreens.NAVIGATION_ROUTE
+    override val startDestination = SessionsFeatureScreens.startScreenRoute
 
     override fun registerGraph(
         navGraphBuilder: NavGraphBuilder,
@@ -25,9 +26,10 @@ class AuthFeatureImpl @Inject constructor() : FeatureApi {
             route = navigationRoute
         ) {
             composable(
-                route = AuthFeatureScreens.ProfileScreen.route
+                route = SessionsFeatureScreens.SessionsScreen.route
             ) {
-               ProfileScreen()
+//                Text("Session")
+                SessionScreen()
             }
         }
     }

@@ -45,6 +45,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.material)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -52,13 +54,11 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     implementation(libs.androidx.navigation.compose)
 
-    implementation(libs.coil3.coil.compose)
-
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(project(":common:navigation"))
-    implementation(project(":features:main:domain"))
-    implementation(project(":features:main:data"))
+    implementation(project(":features:sessions:domain"))
+    implementation(project(":features:sessions:data"))
 }
