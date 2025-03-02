@@ -661,7 +661,7 @@ fun ItemMoveSearch(item: Movie, onClick: () -> Unit) {
                     modifier = Modifier.padding(top = 8.dp)
                 )
                 Row(
-                    Modifier.padding(top = 4.dp),
+                    Modifier.fillMaxWidth().padding(top = 4.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
