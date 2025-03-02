@@ -1,9 +1,8 @@
 package com.nikol.presentation.screens.di
 
 import com.nikol.domain.repository.SessionFeatureRepository
+import com.nikol.domain.use_cases.AddMovieIntoFavoriteUseCase
 import com.nikol.domain.use_cases.AddUserIntoSessionUseCase
-import com.nikol.domain.use_cases.GetCommonGenresUseCase
-import com.nikol.domain.use_cases.GetLikedMoviesUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,11 +17,8 @@ object SessionScreenModule {
         AddUserIntoSessionUseCase(sessionFeatureRepository)
 
     @Provides
-    fun provideGetLikedMoviesUseCase(sessionFeatureRepository: SessionFeatureRepository): GetLikedMoviesUseCase =
-        GetLikedMoviesUseCase(sessionFeatureRepository)
+    fun provideAddMovieUseCase(sessionFeatureRepository: SessionFeatureRepository): AddMovieIntoFavoriteUseCase =
+        AddMovieIntoFavoriteUseCase(sessionFeatureRepository)
 
-    @Provides
-    fun provideGetCommonGenresUseCase(sessionFeatureRepository: SessionFeatureRepository): GetCommonGenresUseCase =
-        GetCommonGenresUseCase(sessionFeatureRepository)
 
 }
