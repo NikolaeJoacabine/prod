@@ -9,6 +9,9 @@ import androidx.compose.animation.with
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,8 +25,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Favorite
@@ -78,21 +83,28 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SessionScreen(viewModel: SessionsViewModel = hiltViewModel()) {
+    val scrollState = rememberScrollState()
+    var login by remember { mutableStateOf("") }
+    var genres by remember { mutableStateOf<List<String>>(listOf()) } // Управляемое состояние списка жанров
+    var showBottomSheet by remember { mutableStateOf(false) } // Управляем состояние показа листа
+    val sessionState by viewModel.sessionState.collectAsState()
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { it != SheetValue.PartiallyExpanded }
+    )
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF5F5F5)), // Серый фон
+            .background(Color(0xFFF5F5F5))
+            .scrollable(
+                state = rememberScrollableState { delta ->
+                    delta
+                },
+                orientation = Orientation.Vertical
+            )
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var login by remember { mutableStateOf("") }
-        var genres by remember { mutableStateOf<List<String>>(listOf()) } // Управляемое состояние списка жанров
-        var showBottomSheet by remember { mutableStateOf(false) } // Управляем состояние показа листа
-        val sessionState by viewModel.sessionState.collectAsState()
-        val sheetState = rememberModalBottomSheetState(
-            skipPartiallyExpanded = true,
-            confirmValueChange = { it != SheetValue.PartiallyExpanded }
-        )
-
         // Управляем показом BottomSheet
         if (showBottomSheet) {
             ModalBottomSheet(
@@ -108,6 +120,7 @@ fun SessionScreen(viewModel: SessionsViewModel = hiltViewModel()) {
                                 ItemMoveSearch(movie, onClick = {})
                             }
                         }
+
                         else -> {
                             item {
                                 Text(
