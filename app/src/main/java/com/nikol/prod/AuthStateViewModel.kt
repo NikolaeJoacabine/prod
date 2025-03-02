@@ -35,7 +35,7 @@ class AuthStateViewModel @Inject constructor(
         viewModelScope.launch {
             _authState.value = AuthState.Loading
 //            delay(2000)//для теста
-//            _authState.value = AuthState.Authenticated("")
+//            _authState.value = AuthState.Authenticated
             val credentials = getCurrentUserUseCase.invoke()
             if (credentials != null) {
                 when (val result = loginUseCase.invoke(credentials.first, credentials.second)) {

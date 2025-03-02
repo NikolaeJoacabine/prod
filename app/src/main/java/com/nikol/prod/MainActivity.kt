@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowCompat
 import com.nikol.navigation.BottomBarItem
 import com.nikol.navigation.FeatureApi
 import com.nikol.prod.ui.theme.ProdTheme
@@ -27,6 +28,7 @@ class MainActivity : ComponentActivity() {
     lateinit var featureNavigationApis: List<@JvmSuppressWildcards FeatureApi>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {

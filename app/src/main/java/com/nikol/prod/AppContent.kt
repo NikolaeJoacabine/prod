@@ -2,6 +2,7 @@ package com.nikol.prod
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -32,6 +35,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -41,10 +45,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -57,6 +66,12 @@ import androidx.navigation.compose.rememberNavController
 import com.nikol.navigation.BottomBarItem
 import com.nikol.navigation.FeatureApi
 import com.nikol.prod.nav.AppNavGraph
+
+val focusedBorderColor = Color(0xFF7A5AF8)
+val unfocusedBorderColor = Color(0xFFCCCCCC)
+val errorBorderColor = Color(0xFFE53935)
+val textColor = Color(0xFF333333)
+val backgroundColor = Color.White
 
 @Composable
 fun AppContent(
@@ -144,12 +159,16 @@ fun RegisterScreen(
     val authState by authStateViewModel.authState.collectAsState()
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF2F4F7)) // Унифицирован с LoginScreen
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
+            .pointerInput(Unit) {
+                detectTapGestures { focusManager.clearFocus() }
+            },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -170,13 +189,14 @@ fun RegisterScreen(
             elevation = CardDefaults.elevatedCardElevation(0.dp),
             colors = CardDefaults.cardColors(containerColor = Color(0xFFFFFFFF))
         ) {
+
+            val isError = authState is AuthState.Error
             Column(
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.Start
             ) {
-                // Поле для логина
                 OutlinedTextField(
                     value = login,
                     onValueChange = { login = it },
@@ -185,10 +205,24 @@ fun RegisterScreen(
                         .fillMaxWidth()
                         .padding(bottom = 8.dp),
                     singleLine = true,
-                    shape = RoundedCornerShape(15.dp)
+                    shape = RoundedCornerShape(15.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = focusedBorderColor,
+                        unfocusedBorderColor = if (isError) errorBorderColor else unfocusedBorderColor,
+                        cursorColor = focusedBorderColor,
+                        focusedLabelColor = focusedBorderColor,
+                        unfocusedLabelColor = unfocusedBorderColor,
+                        focusedTextColor = textColor,
+                        unfocusedTextColor = textColor,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                    ),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    )
                 )
 
-                // Поле для пароля
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
@@ -197,7 +231,23 @@ fun RegisterScreen(
                         .fillMaxWidth()
                         .padding(bottom = 8.dp),
                     singleLine = true,
-                    shape = RoundedCornerShape(15.dp)
+                    shape = RoundedCornerShape(15.dp),
+                    visualTransformation = PasswordVisualTransformation(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = focusedBorderColor,
+                        unfocusedBorderColor = if (isError) errorBorderColor else unfocusedBorderColor,
+                        cursorColor = focusedBorderColor,
+                        focusedLabelColor = focusedBorderColor,
+                        unfocusedLabelColor = unfocusedBorderColor,
+                        focusedTextColor = textColor,
+                        unfocusedTextColor = textColor,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                    ),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = { focusManager.clearFocus() }
+                    )
                 )
             }
         }
@@ -208,7 +258,7 @@ fun RegisterScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp), // Унифицированный вертикальный отступ
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF744EDC))
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7A5AF8))
         ) {
             Text("Зарегистрироваться", color = Color.White)
         }
@@ -221,7 +271,7 @@ fun RegisterScreen(
         ) {
             Text("Есть аккаунт? ", color = Color.Gray)
             TextButton(onClick = { navController.navigate("login") }) {
-                Text("Войти", color = Color(0xFF744EDC))
+                Text("Войти", color = Color(0xFF7A5AF8))
             }
         }
 
@@ -229,7 +279,7 @@ fun RegisterScreen(
         when (authState) {
             is AuthState.Loading -> CircularProgressIndicator(
                 modifier = Modifier.padding(top = 16.dp),
-                color = Color(0xFF744EDC)
+                color = Color(0xFF7A5AF8)
             )
 
             is AuthState.Error -> Text(
@@ -251,6 +301,7 @@ fun LoginScreen(
     val authState by authStateViewModel.authState.collectAsState()
     var login by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
 
     Column(
         modifier = Modifier
@@ -283,7 +334,7 @@ fun LoginScreen(
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.Start
             ) {
-                // Поле для логина
+                val isError = authState is AuthState.Error
                 OutlinedTextField(
                     value = login,
                     onValueChange = { login = it },
@@ -292,10 +343,24 @@ fun LoginScreen(
                         .fillMaxWidth()
                         .padding(bottom = 8.dp),
                     singleLine = true,
-                    shape = RoundedCornerShape(15.dp)
+                    shape = RoundedCornerShape(15.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = focusedBorderColor,
+                        unfocusedBorderColor = if (isError) errorBorderColor else unfocusedBorderColor,
+                        cursorColor = focusedBorderColor,
+                        focusedLabelColor = focusedBorderColor,
+                        unfocusedLabelColor = unfocusedBorderColor,
+                        focusedTextColor = textColor,
+                        unfocusedTextColor = textColor,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                    ),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                    )
                 )
 
-                // Поле для пароля
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
@@ -304,23 +369,37 @@ fun LoginScreen(
                         .fillMaxWidth()
                         .padding(bottom = 8.dp),
                     singleLine = true,
-                    shape = RoundedCornerShape(15.dp)
+                    shape = RoundedCornerShape(15.dp),
+                    visualTransformation = PasswordVisualTransformation(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = focusedBorderColor,
+                        unfocusedBorderColor = if (isError) errorBorderColor else unfocusedBorderColor,
+                        cursorColor = focusedBorderColor,
+                        focusedLabelColor = focusedBorderColor,
+                        unfocusedLabelColor = unfocusedBorderColor,
+                        focusedTextColor = textColor,
+                        unfocusedTextColor = textColor,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                    ),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = { focusManager.clearFocus() }
+                    )
                 )
             }
         }
 
-        // Кнопка
         Button(
             onClick = { authStateViewModel.login(login, password) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 16.dp), // Унифицированный вертикальный отступ
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF744EDC))
+                .padding(vertical = 16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7A5AF8))
         ) {
             Text("Войти", color = Color.White)
         }
 
-        // Spacer для равномерного расстояния
         Spacer(modifier = Modifier.height(16.dp))
 
         // Ссылка
@@ -331,7 +410,7 @@ fun LoginScreen(
         ) {
             Text("Нет аккаунта? ", color = Color.Gray)
             TextButton(onClick = { navController.navigate("register") }) {
-                Text("Зарегистрироваться", color = Color(0xFF744EDC))
+                Text("Зарегистрироваться", color = Color(0xFF7A5AF8))
             }
         }
 
@@ -339,8 +418,9 @@ fun LoginScreen(
         when (authState) {
             is AuthState.Loading -> CircularProgressIndicator(
                 modifier = Modifier.padding(top = 16.dp),
-                color = Color(0xFF744EDC)
+                color = Color(0xFF7A5AF8)
             )
+
             is AuthState.Error -> Text(
                 "Ошибка: ${(authState as AuthState.Error).message}",
                 color = MaterialTheme.colorScheme.error,
@@ -380,19 +460,23 @@ private fun BottomBar(
                     Icon(
                         painter = painterResource(bottomBarItem.iconId),
                         contentDescription = null,
-                        tint = if (currentDestinationParentRoute == bottomBarItem.navigationRoute) Color(0xFF744EDC) else Color.Gray
+                        tint = if (currentDestinationParentRoute == bottomBarItem.navigationRoute) Color(
+                            0xFF7A5AF8
+                        ) else Color.Gray
                     )
                 },
                 label = {
                     Text(
                         text = stringResource(bottomBarItem.nameId),
-                        color = if (currentDestinationParentRoute == bottomBarItem.navigationRoute) Color(0xFF744EDC) else Color.Gray
+                        color = if (currentDestinationParentRoute == bottomBarItem.navigationRoute) Color(
+                            0xFF7A5AF8
+                        ) else Color.Gray
                     )
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color(0xFF744EDC),
+                    selectedIconColor = Color(0xFF7A5AF8),
                     unselectedIconColor = Color.Gray,
-                    selectedTextColor = Color(0xFF744EDC),
+                    selectedTextColor = Color(0xFF7A5AF8),
                     unselectedTextColor = Color.Gray,
                     indicatorColor = Color.Transparent
                 )

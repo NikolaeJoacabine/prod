@@ -1,8 +1,10 @@
 package com.nikol.domain.model
 
 data class Movie(
-    val url: String,
-    val urlImage: String,
+    val id: Int,
+    val title: String,
+    val year: Int? = null,
     val description: String,
-    val title: String
+    val imageUrl: String,
+    val rating: Double? = null
 )

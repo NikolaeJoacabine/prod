@@ -8,8 +8,6 @@ import retrofit2.http.POST
 
 interface AuthApi {
 
-
-
     @POST("auth/login")
     suspend fun login(
         @Header("Login") encryptedLogin: String,
