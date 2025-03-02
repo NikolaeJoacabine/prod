@@ -1,13 +1,16 @@
 package com.nikol.presentation.nav
 
-import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.nikol.domain.model.Movie
 import com.nikol.navigation.FeatureApi
 import com.nikol.presentation.screens.add.AddScreen
+import com.nikol.presentation.screens.detail.DetailScreen
 import com.nikol.presentation.screens.library.LibraryScreen
 import javax.inject.Inject
 
@@ -36,6 +39,22 @@ class LibraryFeatureImpl @Inject constructor() : FeatureApi {
                 route = LibraryFeatureScreens.AddScreen.route
             ) {
                 AddScreen(navController)
+            }
+
+            composable(
+                route = LibraryFeatureScreens.DetailScreen.route,
+                arguments = listOf(
+                    navArgument("movieJson") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val movieJson = backStackEntry.arguments?.getString("movieJson")
+                val movie = try {
+                    LibraryFeatureScreens.DetailScreen.parseArguments(movieJson)
+                } catch (e: Exception) {
+                    // Обработка ошибок
+                    Movie(0, "Error", description = "", imageUrl = "")
+                }
+                DetailScreen(navController, movie)
             }
         }
     }

@@ -4,6 +4,7 @@ import com.nikol.domain.repository.MainFeatureRepository
 import com.nikol.domain.use_cases.AddMovieUseCase
 import com.nikol.domain.use_cases.AddNewMovieUseCase
 import com.nikol.domain.use_cases.DeleteMovieUseCase
+import com.nikol.domain.use_cases.GetFilmUseCase
 import com.nikol.domain.use_cases.InspectLibraryUseCase
 import com.nikol.domain.use_cases.SearchFilmsWithApiUseCase
 import dagger.Module
@@ -34,5 +35,9 @@ object LibraryScreenModule {
     @Provides
     fun provideSearchFilmsWithApiUseCase(mainFeatureRepository: MainFeatureRepository): SearchFilmsWithApiUseCase =
         SearchFilmsWithApiUseCase(mainFeatureRepository)
+
+    @Provides
+    fun provideGetFilmDetail(mainFeatureRepository: MainFeatureRepository): GetFilmUseCase =
+        GetFilmUseCase(mainFeatureRepository)
 
 }

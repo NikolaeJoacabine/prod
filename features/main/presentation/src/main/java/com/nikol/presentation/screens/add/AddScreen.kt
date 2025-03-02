@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,7 +27,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -36,7 +34,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
@@ -48,11 +45,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -74,7 +71,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.BiasAbsoluteAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -92,12 +88,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
-import coil3.request.crossfade
 import com.nikol.domain.model.Movie
 import com.nikol.domain.results.RemoteObtainingLibrary
 import com.nikol.presentation.R
-import com.nikol.presentation.screens.library.rememberPaint
 import java.io.ByteArrayOutputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -596,36 +589,6 @@ fun ItemMoveSearch(item: Movie, onClick: () -> Unit) {
                         .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)),
                     contentScale = ContentScale.Crop,
                 )
-
-                IconButton(
-                    onClick = {
-                        isFavorite = !isFavorite
-                        onClick()
-//                        onFavoriteClick()
-                    },
-                    modifier = Modifier
-                        .size(36.dp)
-                ) {
-                    AnimatedContent(
-                        targetState = isFavorite,
-                        transitionSpec = {
-                            fadeIn() with fadeOut()
-                        },
-                        label = ""
-                    ) { favorite ->
-                        Icon(
-                            imageVector = if (favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = "Избранное",
-                            tint = if (favorite) Color.Red else Color(0xFF744EDC),
-                            modifier = Modifier
-                                .graphicsLayer {
-                                    rotationZ = rotation.value
-                                    scaleX = scale.value
-                                    scaleY = scale.value
-                                }
-                        )
-                    }
-                }
             }
 
             Column(
@@ -686,13 +649,6 @@ fun ItemMoveSearch(item: Movie, onClick: () -> Unit) {
                     ) // Уменьшено с 6.dp
                 }
 
-                Text(
-                    text = "Жанр не указан",
-                    color = Color(0xFF333333),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(top = 4.dp)
-                ) // Уменьшено с 8.dp
 
                 Text(
                     text = item.description,
@@ -703,6 +659,46 @@ fun ItemMoveSearch(item: Movie, onClick: () -> Unit) {
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.padding(top = 8.dp)
                 )
+                Row(
+                    Modifier.padding(top = 4.dp),
+                ) {
+                    Text(
+                        text = "Жанр не указан",
+                        color = Color(0xFF333333),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(top = 4.dp)
+                    ) // Уменьшено с 8.dp
+                    IconButton(
+                        onClick = {
+                            isFavorite = !isFavorite
+                            onClick()
+                        },
+                        modifier = Modifier
+                            .size(36.dp)
+                    ) {
+                        AnimatedContent(
+                            targetState = isFavorite,
+                            transitionSpec = {
+                                fadeIn() with fadeOut()
+                            },
+                            label = ""
+                        ) { favorite ->
+                            Icon(
+                                imageVector = if (favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                contentDescription = "Избранное",
+                                tint = if (favorite) Color.Red else Color(0xFF744EDC),
+                                modifier = Modifier
+                                    .graphicsLayer {
+                                        rotationZ = rotation.value
+                                        scaleX = scale.value
+                                        scaleY = scale.value
+                                    }
+                            )
+                        }
+                    }
+                }
+
             }
         }
     }

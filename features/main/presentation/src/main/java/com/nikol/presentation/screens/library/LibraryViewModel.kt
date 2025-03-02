@@ -35,7 +35,7 @@ class LibraryViewModel @Inject constructor(
         getLibrary()
     }
 
-    private fun getLibrary() {
+    fun getLibrary() {
         viewModelScope.launch {
             _libraryState.value = RemoteObtainingLibrary.Loading
             inspectLibraryUseCase.invoke().let {

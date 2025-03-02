@@ -13,3 +13,13 @@ fun MovieDTO.toDomain() =
         imageUrl = this.imageUrl ?: "",
         rating = this.rating ?: 0.0
     )
+
+fun Movie.toEntity() =
+    MovieDTO(
+        id = this.id,
+        title = this.title,
+        year = this.id,
+        description = this.description,
+        imageUrl = this.imageUrl,
+        rating = this.rating
+    )
