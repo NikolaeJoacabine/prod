@@ -1,6 +1,5 @@
 package com.nikol.data.remote.repository
 
-import com.nikol.data.remote.models.Movie
 import com.nikol.data.remote.network.LibraryApi
 import com.nikol.domain.repository.AuthFeatureRepository
 import com.nikol.domain.results.RemoteObtainingLibrary

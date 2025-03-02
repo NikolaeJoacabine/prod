@@ -50,6 +50,7 @@ dependencies {
     implementation(project(":common:auth:domain"))
     implementation(project(":common:auth:data"))
     implementation(project(":features:main:presentation"))
+    implementation(project(":features:sessions:presentation"))
 
 
     //Core & Lifecycle
