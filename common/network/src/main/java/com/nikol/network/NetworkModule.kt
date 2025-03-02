@@ -1,6 +1,8 @@
 package com.nikol.network
 
 import android.content.Context
+import coil3.ImageLoader
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -61,6 +63,25 @@ object NetworkModule {
             .build()
     }
 
+    @Singleton
+    @Provides
+    fun provideImageLoader(
+        @ApplicationContext context: Context,
+        okHttpClient: OkHttpClient
+    ): ImageLoader {
+        return ImageLoader.Builder(context)
+            .components {
+                add(
+                    OkHttpNetworkFetcherFactory(
+                        callFactory = {
+                            okHttpClient
+                        }
+                    )
+                )
+            }
+            .build()
+    }
+
 
     @Provides
     @Singleton
@@ -88,6 +109,7 @@ object NetworkModule {
         sslContext.init(null, tmf.trustManagers, SecureRandom())
         return sslContext.socketFactory
     }
+
     private fun createTrustManager(context: Context): X509TrustManager {
         val cf = CertificateFactory.getInstance("X.509")
         val certInput = context.resources.openRawResource(R.raw.cert)
