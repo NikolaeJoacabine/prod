@@ -24,6 +24,10 @@
             <option value="$PROJECT_DIR$/features/main/data" />
             <option value="$PROJECT_DIR$/features/main/domain" />
             <option value="$PROJECT_DIR$/features/main/presentation" />
+            <option value="$PROJECT_DIR$/features/sessions" />
+            <option value="$PROJECT_DIR$/features/sessions/data" />
+            <option value="$PROJECT_DIR$/features/sessions/domain" />
+            <option value="$PROJECT_DIR$/features/sessions/presentation" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />
