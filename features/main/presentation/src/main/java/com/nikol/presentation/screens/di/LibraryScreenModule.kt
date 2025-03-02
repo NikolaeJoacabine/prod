@@ -2,8 +2,10 @@ package com.nikol.presentation.screens.di
 
 import com.nikol.domain.repository.MainFeatureRepository
 import com.nikol.domain.use_cases.AddMovieUseCase
+import com.nikol.domain.use_cases.AddNewMovieUseCase
 import com.nikol.domain.use_cases.DeleteMovieUseCase
 import com.nikol.domain.use_cases.InspectLibraryUseCase
+import com.nikol.domain.use_cases.SearchFilmsWithApiUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,5 +26,13 @@ object LibraryScreenModule {
     @Provides
     fun provideDeleteMovieUseCase(mainFeatureRepository: MainFeatureRepository): DeleteMovieUseCase =
         DeleteMovieUseCase(mainFeatureRepository)
+
+    @Provides
+    fun provideAddNewMovieUseCase(mainFeatureRepository: MainFeatureRepository): AddNewMovieUseCase =
+        AddNewMovieUseCase(mainFeatureRepository)
+
+    @Provides
+    fun provideSearchFilmsWithApiUseCase(mainFeatureRepository: MainFeatureRepository): SearchFilmsWithApiUseCase =
+        SearchFilmsWithApiUseCase(mainFeatureRepository)
 
 }

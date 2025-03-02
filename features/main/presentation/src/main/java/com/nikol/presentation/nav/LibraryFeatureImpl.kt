@@ -7,6 +7,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.nikol.navigation.FeatureApi
+import com.nikol.presentation.screens.add.AddScreen
+import com.nikol.presentation.screens.library.LibraryScreen
 import javax.inject.Inject
 
 
@@ -27,7 +29,13 @@ class LibraryFeatureImpl @Inject constructor() : FeatureApi {
             composable(
                 route = LibraryFeatureScreens.LibraryScreen.route
             ) {
-                Text("library")
+                LibraryScreen(navController)
+            }
+
+            composable(
+                route = LibraryFeatureScreens.AddScreen.route
+            ) {
+                AddScreen(navController)
             }
         }
     }

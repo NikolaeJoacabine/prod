@@ -5,6 +5,8 @@ import com.nikol.domain.results.RemoteObtainingLibraryActionResult
 
 interface RemoteLibraryRepository {
     suspend fun getLibrary(): RemoteObtainingLibrary
-    suspend fun addInLibrary(): RemoteObtainingLibraryActionResult
+    suspend fun addInLibrary(id: Int): RemoteObtainingLibraryActionResult
     suspend fun deleteMovie(): RemoteObtainingLibraryActionResult
+    suspend fun addNewFilm(byte: ByteArray) : RemoteObtainingLibraryActionResult
+    suspend fun searchFilms(str: String): RemoteObtainingLibrary
 }

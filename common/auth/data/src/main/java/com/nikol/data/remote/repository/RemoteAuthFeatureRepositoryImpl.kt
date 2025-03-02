@@ -15,7 +15,10 @@ class RemoteAuthFeatureRepositoryImpl(
 
     override suspend fun signup(login: String, password: String): RemoteObtainingCreateUser {
         return try {
-            val response = authApi.signup(login, password)
+
+            val baseLogin = Base64.getEncoder().encodeToString(login.toByteArray(Charsets.UTF_8))
+            val basePassword = Base64.getEncoder().encodeToString(password.toByteArray(Charsets.UTF_8))
+            val response = authApi.signup(baseLogin, basePassword)
             Log.d("AuthDebug", "Шаг 1: Ответ получен: $response")
             RemoteObtainingCreateUser.Success(response.accessToken)
         } catch (e: SerializationException) {
@@ -33,10 +36,12 @@ class RemoteAuthFeatureRepositoryImpl(
             RemoteObtainingCreateUser.NetworkError("Неизвестная ошибка: ${e.message}")
         }
     }
+
     override suspend fun login(login: String, password: String): RemoteObtainingLoginResult {
         return try {
-
-            val response = authApi.login(login, password)
+            val baseLogin = Base64.getEncoder().encodeToString(login.toByteArray(Charsets.UTF_8))
+            val basePassword = Base64.getEncoder().encodeToString(password.toByteArray(Charsets.UTF_8))
+            val response = authApi.login(baseLogin, basePassword)
             Log.d("AuthDebug", "Шаг 1: Ответ получен: $response")
             RemoteObtainingLoginResult.Success(response.accessToken)
         } catch (e: SerializationException) {
