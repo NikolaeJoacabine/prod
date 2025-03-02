@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     implementation(libs.coil3.coil.compose)
+    implementation(libs.coil3.coil.network)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)

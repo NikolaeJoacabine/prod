@@ -130,123 +130,77 @@ fun AddScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(Color(0xFFF2F4F7))
             .pointerInput(Unit) {
                 detectTapGestures {
                     focusManager.clearFocus()
                 }
             }
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp, start = 12.dp, end = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-
-            TextField(
-                value = searchText,
-                onValueChange = { searchText = it },
-                modifier = Modifier
-                    .weight(1f)
-                    .background(Color.White, RoundedCornerShape(24.dp)),
-                placeholder = {
-                    Text(
-                        text = "Поиск фильмов...",
-                        color = Color(0xFF7A5AF8).copy(alpha = 0.7f),
-                        fontSize = 16.sp
-                    )
-                },
-                leadingIcon = {
-                    IconButton(onClick = {
-                        navController.popBackStack()
-                    }) {
-                        Icon(
-                            painter = painterResource(R.drawable.arrow_back),
-                            contentDescription = "Назад",
-                            tint = Color(0xFF7A5AF8),
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                },
-                trailingIcon = {
-                    if (searchText.isNotEmpty()) {
-                        Icon(
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = "Очистить",
-                            tint = Color(0xFF7A5AF8),
-                            modifier = Modifier
-                                .clickable { searchText = "" }
-                                .size(24.dp))
-                    }
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedTextColor = Color(0xFF333333),
-                    unfocusedTextColor = Color(0xFF333333),
-                    cursorColor = Color(0xFF7A5AF8),
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                shape = RoundedCornerShape(24.dp),
-                singleLine = true,
-                textStyle = LocalTextStyle.current.copy(
-                    fontSize = 16.sp,
-                    lineHeight = 20.sp
-                )
-            )
-            IconButton(
-                onClick = { viewModel.searchFilms(searchText) },
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(
-                        color = Color(0xFF7A5AF8),
-                        shape = CircleShape
-                    )
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Поиск",
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
-
-        AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data("https://picsum.photos/200/300")
-                .crossfade(true)
-                .build(),
-            contentDescription = "Test Image",
-            modifier = Modifier
-                .size(200.dp), // Укажите размер
-            onError = { error ->
-                Log.e("image", "Error loading image: ${error.result.throwable.message}")
-            },
-            placeholder = rememberPaint() // Используйте вашу заглушку
-        )
-        when (val currentState = searchState) {
-            is RemoteObtainingLibrary.Loading -> Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(trackColor = Color(0xFF7A5AF8))
-            }
-
-            is RemoteObtainingLibrary.Error -> {
-                Box(
+        Box(modifier = Modifier.fillMaxSize()) {
+            when (val currentState = searchState) {
+                is RemoteObtainingLibrary.Loading -> Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = currentState.message,
-                        color = Color.Red,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
+                    CircularProgressIndicator(trackColor = Color(0xFF7A5AF8))
+                }
+
+                is RemoteObtainingLibrary.Error -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = currentState.message,
+                            color = Color.Red,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 16.dp),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("Нет нужного фильма?", color = Color.Gray)
+                            TextButton(onClick = { showBottomSheet = true }) {
+                                Text("добавить", color = Color(0xFF7A5AF8))
+                            }
+                        }
+                    }
+                }
+
+                is RemoteObtainingLibrary.Success -> {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        item {
+                            Spacer(Modifier.height(80.dp))
+                        }
+                        items(currentState.library) { movie ->
+                            ItemMoveSearch(movie) {
+                                viewModel.addMove(movie.id)
+                            }
+                        }
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 16.dp),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text("Нет нужного фильма?", color = Color.Gray)
+                                TextButton(onClick = { showBottomSheet = true }) {
+                                    Text("добавить", color = Color(0xFF7A5AF8))
+                                }
+                            }
+                        }
+                    }
+                }
+
+                else -> {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -261,45 +215,85 @@ fun AddScreen(
                     }
                 }
             }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp, start = 12.dp, end = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
 
-            is RemoteObtainingLibrary.Success -> {
-//                LazyColumn(modifier = Modifier.fillMaxSize()) {
-//                    items(currentState.library) { movie ->
-//                        ItemMoveSearch(movie) {
-//                            viewModel.addMove(movie.id)
-//                        }
-//                    }
-//                    item {
-//                        Row(
-//                            modifier = Modifier
-//                                .fillMaxWidth()
-//                                .padding(top = 16.dp),
-//                            horizontalArrangement = Arrangement.Center,
-//                            verticalAlignment = Alignment.CenterVertically
-//                        ) {
-//                            Text("Нет нужного фильма?", color = Color.Gray)
-//                            TextButton(onClick = { showBottomSheet = true }) {
-//                                Text("добавить", color = Color(0xFF7A5AF8))
-//                            }
-//                        }
-//                    }
-//                }
-            }
-
-            else -> {
-                Row(
+                TextField(
+                    value = searchText,
+                    onValueChange = { searchText = it },
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
+                        .weight(1f)
+                        .background(Color(0xFFF2F4F7), RoundedCornerShape(24.dp)),
+                    placeholder = {
+                        Text(
+                            text = "Поиск фильмов...",
+                            color = Color(0xFF7A5AF8).copy(alpha = 0.7f),
+                            fontSize = 16.sp
+                        )
+                    },
+                    leadingIcon = {
+                        IconButton(onClick = {
+                            navController.popBackStack()
+                        }) {
+                            Icon(
+                                painter = painterResource(R.drawable.arrow_back),
+                                contentDescription = "Назад",
+                                tint = Color(0xFF7A5AF8),
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    },
+                    trailingIcon = {
+                        if (searchText.isNotEmpty()) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Очистить",
+                                tint = Color(0xFF7A5AF8),
+                                modifier = Modifier
+                                    .clickable { searchText = "" }
+                                    .size(24.dp))
+                        }
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        focusedTextColor = Color(0xFF333333),
+                        unfocusedTextColor = Color(0xFF333333),
+                        cursorColor = Color(0xFF7A5AF8),
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    shape = RoundedCornerShape(24.dp),
+                    singleLine = true,
+                    textStyle = LocalTextStyle.current.copy(
+                        fontSize = 16.sp,
+                        lineHeight = 20.sp
+                    )
+                )
+                IconButton(
+                    onClick = { viewModel.searchFilms(searchText) },
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(
+                            color = Color(0xFF7A5AF8),
+                            shape = CircleShape
+                        )
                 ) {
-                    Text("Нет нужного фильма?", color = Color.Gray)
-                    TextButton(onClick = { showBottomSheet = true }) {
-                        Text("добавить", color = Color(0xFF7A5AF8))
-                    }
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Поиск",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
+
+
         }
     }
 
