@@ -8,10 +8,12 @@ fun MovieDTO.toDomain() =
     Movie(
         id = this.id ?: 0,
         title = this.title ?: "",
-        year = this.year ?: 0,
+        year = this.year,
         description = this.description ?: "",
         imageUrl = this.imageUrl ?: "",
-        rating = this.rating ?: 0.0
+        rating = this.rating ?: 0.0,
+        geners = this.genres,
+        isWatchlist = this.isWatchlist
     )
 
 fun Movie.toEntity() =
@@ -21,5 +23,7 @@ fun Movie.toEntity() =
         year = this.id,
         description = this.description,
         imageUrl = this.imageUrl,
-        rating = this.rating
+        rating = this.rating,
+        genres = this.geners,
+        isWatchlist = this.isWatchlist
     )

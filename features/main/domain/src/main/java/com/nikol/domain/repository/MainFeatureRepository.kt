@@ -8,8 +8,9 @@ import com.nikol.domain.results.RemoteObtainingMovie
 interface MainFeatureRepository {
     suspend fun getUserLibrary(): RemoteObtainingLibrary
     suspend fun addMovieInLibrary(id : Int): RemoteObtainingLibraryActionResult
-    suspend fun deleteMovie(): RemoteObtainingLibraryActionResult
-    suspend fun addNewMovieInLibrary(byte: ByteArray): RemoteObtainingLibraryActionResult
+    suspend fun deleteMovie(id: Int): RemoteObtainingLibraryActionResult
+    suspend fun addNewMovieInLibrary(byte: ByteArray, movie: Movie): RemoteObtainingLibraryActionResult
     suspend fun searchMoviesWithApi(str: String): RemoteObtainingLibrary
     suspend fun getDetailMovie(movie: Movie) : RemoteObtainingMovie
+    suspend fun addInWatched(id: Int): RemoteObtainingLibraryActionResult
 }

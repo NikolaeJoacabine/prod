@@ -2,6 +2,7 @@ package com.nikol.presentation.screens.add
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nikol.domain.model.Movie
 import com.nikol.domain.results.RemoteObtainingLibrary
 import com.nikol.domain.results.RemoteObtainingLibraryActionResult
 import com.nikol.domain.use_cases.AddMovieUseCase
@@ -46,12 +47,13 @@ class AddViewModel @Inject constructor(
     }
 
     fun addNewMovie(
-        imageByteArray: ByteArray
+        imageByteArray: ByteArray,
+        movie: Movie
     ) {
         _addingState.value = RemoteObtainingLibraryActionResult.Loading
         viewModelScope.launch {
             _addingState.value = RemoteObtainingLibraryActionResult.Loading
-            addNewMovieUseCase.invoke(imageByteArray).let {
+            addNewMovieUseCase.invoke(imageByteArray, movie).let {
                _addingState.value = it
             }
         }

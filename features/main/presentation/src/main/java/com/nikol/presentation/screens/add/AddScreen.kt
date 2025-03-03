@@ -92,6 +92,7 @@ import coil3.compose.AsyncImage
 import com.nikol.domain.model.Movie
 import com.nikol.domain.results.RemoteObtainingLibrary
 import com.nikol.presentation.R
+import com.nikol.presentation.nav.LibraryFeatureScreens
 import java.io.ByteArrayOutputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -173,8 +174,8 @@ fun AddScreen(
                             Spacer(Modifier.height(80.dp))
                         }
                         items(currentState.library) { movie ->
-                            ItemMoveSearch(movie) {
-                                viewModel.addMove(movie.id)
+                            ItemMoveSearch(movie, navController) {
+                                viewModel.addMove(movie.id ?: 0)
                             }
                         }
                         item {
@@ -462,7 +463,8 @@ fun AddScreen(
                             contentDescription = "Ссылка",
                             tint = Color(0xFF7A5AF8)
                         )
-                    }
+                    },
+                    maxLines = 1
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -538,7 +540,18 @@ fun AddScreen(
 
                 // Кнопка сохранения
                 Button(
-                    onClick = { /* TODO: Сохранить */ },
+                    onClick = {
+                        viewModel.addNewMovie(
+                            bitmapToByteArray(context, selectedImages),
+                            Movie(
+                                title = nameFilm,
+                                description = description,
+                                geners = listOf(janr),
+                                filmUrl = link,
+                            )
+                        )
+                        showBottomSheet = false
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
@@ -563,7 +576,7 @@ fun AddScreen(
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun ItemMoveSearch(item: Movie, onClick: () -> Unit) {
+fun ItemMoveSearch(item: Movie, navController: NavController, onClick: () -> Unit) {
 
     var isFavorite by remember { mutableStateOf(false) }
     val rotation = animateFloatAsState(targetValue = if (isFavorite) 360f else 0f, label = "")
@@ -571,6 +584,7 @@ fun ItemMoveSearch(item: Movie, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { navController.navigate(LibraryFeatureScreens.DetailScreen.withObject(item)) }
             .padding(8.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
@@ -647,7 +661,7 @@ fun ItemMoveSearch(item: Movie, onClick: () -> Unit) {
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.padding(top = 4.dp)
-                    ) // Уменьшено с 6.dp
+                    )
                 }
 
 
@@ -661,7 +675,9 @@ fun ItemMoveSearch(item: Movie, onClick: () -> Unit) {
                     modifier = Modifier.padding(top = 8.dp)
                 )
                 Row(
-                    Modifier.fillMaxWidth().padding(top = 4.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {

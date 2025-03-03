@@ -21,12 +21,12 @@ class MainFeatureRepositoryImpl(
 
     }
 
-    override suspend fun deleteMovie(): RemoteObtainingLibraryActionResult {
-        return remoteLibraryRepository.deleteMovie()
+    override suspend fun deleteMovie(id: Int): RemoteObtainingLibraryActionResult {
+        return remoteLibraryRepository.deleteMovie(id)
     }
 
-    override suspend fun addNewMovieInLibrary(byte: ByteArray): RemoteObtainingLibraryActionResult {
-        return remoteLibraryRepository.addNewFilm(byte)
+    override suspend fun addNewMovieInLibrary(byte: ByteArray, movie: Movie): RemoteObtainingLibraryActionResult {
+        return remoteLibraryRepository.addNewFilm(byte,movie)
     }
 
     override suspend fun searchMoviesWithApi(str: String): RemoteObtainingLibrary {
@@ -35,5 +35,9 @@ class MainFeatureRepositoryImpl(
 
     override suspend fun getDetailMovie(movie: Movie): RemoteObtainingMovie {
         return remoteLibraryRepository.getDetailMovie(movie.toEntity())
+    }
+
+    override suspend fun addInWatched(id: Int): RemoteObtainingLibraryActionResult {
+        return remoteLibraryRepository.addInWatched(id)
     }
 }
