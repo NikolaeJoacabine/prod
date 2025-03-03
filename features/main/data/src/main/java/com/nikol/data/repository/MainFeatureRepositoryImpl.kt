@@ -8,6 +8,7 @@ import com.nikol.domain.repository.MainFeatureRepository
 import com.nikol.domain.results.RemoteObtainingLibrary
 import com.nikol.domain.results.RemoteObtainingLibraryActionResult
 import com.nikol.domain.results.RemoteObtainingMovie
+import com.nikol.domain.results.RemoteObtainingTopics
 
 class MainFeatureRepositoryImpl(
     private val remoteLibraryRepository: RemoteLibraryRepository
@@ -39,5 +40,9 @@ class MainFeatureRepositoryImpl(
 
     override suspend fun addInWatched(id: Int): RemoteObtainingLibraryActionResult {
         return remoteLibraryRepository.addInWatched(id)
+    }
+
+    override suspend fun getTopics(name: String, year: Int): RemoteObtainingTopics {
+        return remoteLibraryRepository.getTopics(name, year)
     }
 }

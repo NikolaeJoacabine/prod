@@ -59,4 +59,10 @@ interface LibraryApi {
         @Path("film_id") id: Int,
         @Header("Authorization") authToken: String
     )
+
+    @GET("/films/discuss/{film_name}/{year}")
+    suspend fun getTopics(
+        @Path("film_name") name: String,
+        @Path("year") year: Int
+    ) : List<String>
 }

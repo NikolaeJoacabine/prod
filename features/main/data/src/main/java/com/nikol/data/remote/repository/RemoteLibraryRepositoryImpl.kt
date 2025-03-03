@@ -10,6 +10,7 @@ import com.nikol.domain.repository.AuthFeatureRepository
 import com.nikol.domain.results.RemoteObtainingLibrary
 import com.nikol.domain.results.RemoteObtainingLibraryActionResult
 import com.nikol.domain.results.RemoteObtainingMovie
+import com.nikol.domain.results.RemoteObtainingTopics
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -103,6 +104,15 @@ class RemoteLibraryRepositoryImpl(
             RemoteObtainingLibraryActionResult.Success
         } catch (e: Exception) {
             RemoteObtainingLibraryActionResult.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun getTopics(name: String, year: Int): RemoteObtainingTopics {
+        return try {
+            val response = libraryApi.getTopics(name, year)
+            RemoteObtainingTopics.Success(response)
+        } catch (e: Exception) {
+            RemoteObtainingTopics.Error(e.message.toString())
         }
     }
 }
