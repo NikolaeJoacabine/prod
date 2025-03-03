@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.with
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.rememberScrollableState
@@ -15,7 +14,6 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,8 +24,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,24 +32,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -69,7 +60,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -77,16 +67,18 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import com.nikol.data.remote.models.SessionMovieDTO
-import com.nikol.domain.model.MovieSession
+import com.nikol.domain.model.Movie
 import com.nikol.domain.results.RemoteObtainingSession
-import com.nikol.presentation.R
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.nikol.presentation.nav.LibraryFeatureScreens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SessionScreen(viewModel: SessionsViewModel = hiltViewModel()) {
+fun SessionScreen(
+    navController: NavController,
+    viewModel: SessionsViewModel = hiltViewModel()
+) {
     val scrollState = rememberScrollState()
     var login by remember { mutableStateOf("") }
     var genres by remember { mutableStateOf<List<String>>(listOf()) } // Управляемое состояние списка жанров
@@ -120,8 +112,37 @@ fun SessionScreen(viewModel: SessionsViewModel = hiltViewModel()) {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     when (val currentState = sessionState) {
                         is RemoteObtainingSession.Success -> {
-                            items(currentState.movies) { movie ->
-                                ItemMoveSearch(movie, onClick = {viewModel.addMovie(movie.id)})
+                            val movies = currentState.movies.map {
+                                Movie(
+                                    id = it.id,
+                                    title = it.title,
+                                    year = it.year,
+                                    description = it.description,
+                                    imageUrl = it.imageUrl,
+                                    rating = it.rating,
+                                    filmUrl = it.filmUrl,
+                                    genres = it.genres,
+                                )
+                            }
+                            items(movies) { movie ->
+                                movie.id?.let {
+                                    MovieItem(
+                                        navController,
+                                        movie,
+                                        onClick = { viewModel.addMovie(it) })
+                                }
+                            }
+                        }
+
+                        is RemoteObtainingSession.Error -> {
+                            item {
+                                Text(
+                                    text = "Не удалось найти пользователя",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    textAlign = TextAlign.Center
+                                )
                             }
                         }
 
@@ -318,17 +339,18 @@ fun Bubble(text: String, size: Dp, offsetX: Dp, offsetY: Dp, onClick: () -> Unit
     }
 }
 
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun ItemMoveSearch(item: MovieSession, onClick: () -> Unit) {
-
+fun MovieItem(navController: NavController, item: Movie, onClick: () -> Unit) {
     var isFavorite by remember { mutableStateOf(false) }
     val rotation = animateFloatAsState(targetValue = if (isFavorite) 360f else 0f, label = "")
     val scale = animateFloatAsState(targetValue = if (isFavorite) 1.2f else 1f, label = "")
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable { navController.navigate(LibraryFeatureScreens.DetailScreen.withObject(item)) },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
@@ -424,7 +446,7 @@ fun ItemMoveSearch(item: MovieSession, onClick: () -> Unit) {
                 ) {
 
                     Text(
-                        text = item.description.toString(),
+                        text = "",
                         color = Color(0xFF333333),
                         fontSize = 14.sp,
                         lineHeight = 18.sp,

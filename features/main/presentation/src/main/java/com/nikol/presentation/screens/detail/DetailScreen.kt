@@ -1,22 +1,14 @@
 package com.nikol.presentation.screens.detail
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.with
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,9 +30,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -60,13 +51,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -76,10 +63,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.nikol.domain.model.Movie
-import com.nikol.domain.results.RemoteObtainingLibrary
 import com.nikol.domain.results.RemoteObtainingMovie
 import com.nikol.presentation.R
-import com.nikol.presentation.screens.library.rememberPaint
 
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -121,12 +106,30 @@ fun DetailScreen(
                         )
 
                         // Кнопка назад с эффектом
+//                        IconButton(
+//                            onClick = { navController.popBackStack() },
+//                            modifier = Modifier
+//                                .offset(16.dp, 16.dp)
+//                                .background(Color.White.copy(0.9f), CircleShape)
+//                                .size(48.dp)
+//                        ) {
+//                            Icon(
+//                                painter = painterResource(R.drawable.arrow_back),
+//                                contentDescription = "Назад",
+//                                tint = Color(0xFF7A5AF8),
+//                                modifier = Modifier.size(24.dp)
+//                            )
+//                        }
                         IconButton(
                             onClick = { navController.popBackStack() },
                             modifier = Modifier
                                 .offset(16.dp, 16.dp)
-                                .background(Color.White.copy(0.9f), CircleShape)
                                 .size(48.dp)
+                                .background(
+                                    color = Color.White,
+                                    shape = CircleShape
+                                )
+
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.arrow_back),
@@ -196,8 +199,8 @@ fun DetailScreen(
                         }
 
                         // Жанры с горизонтальным скроллом
-                        val genres = currentState.movie.geners
-                        if (genres.isNotEmpty()) {
+                        val genres = currentState.movie.genres
+                        if (genres.orEmpty().isNotEmpty()) {
                             Text(
                                 text = "Жанры",
                                 style = MaterialTheme.typography.titleMedium.copy(
@@ -209,7 +212,7 @@ fun DetailScreen(
                                 modifier = Modifier.padding(bottom = 16.dp),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                items(genres) { genre ->
+                                items(genres.orEmpty()) { genre ->
                                     ChipView(text = genre)
                                 }
                             }
