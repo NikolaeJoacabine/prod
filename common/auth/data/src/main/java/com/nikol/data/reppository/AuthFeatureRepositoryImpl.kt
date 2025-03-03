@@ -5,6 +5,7 @@ import com.nikol.data.remote.repository.RemoteAuthFeatureRepository
 import com.nikol.domain.repository.AuthFeatureRepository
 import com.nikol.domain.results.RemoteObtainingCreateUser
 import com.nikol.domain.results.RemoteObtainingLoginResult
+import kotlinx.coroutines.flow.Flow
 
 class AuthFeatureRepositoryImpl(
     private val remoteRepository: RemoteAuthFeatureRepository,
@@ -36,7 +37,7 @@ class AuthFeatureRepositoryImpl(
         localRepository.clearCredentials()
     }
 
-    override suspend fun getCurrentUser(): Pair<String, String>? {
+    override suspend fun getCurrentUser(): Flow<Pair<String, String>?> {
         return localRepository.getCredentials()
     }
 

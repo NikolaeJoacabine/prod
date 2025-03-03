@@ -36,8 +36,9 @@ class DataProfileModule {
     @Provides
     @Singleton
     fun provideMainFeatureRepository(
-        remoteAuthFeatureRepository: RemoteProfileFeatureRepository
+        remoteProfileFeatureRepository: RemoteProfileFeatureRepository,
+        remoteAuthFeatureRepository: AuthFeatureRepository
     ): ProfileFeatureRepository {
-        return ProfileFeatureRepositoryImpl(remoteAuthFeatureRepository)
+        return ProfileFeatureRepositoryImpl(remoteProfileFeatureRepository, remoteAuthFeatureRepository)
     }
 }

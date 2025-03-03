@@ -1,50 +1,47 @@
 package com.nikol.data.local.storage
 
 import android.content.Context
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKey
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import com.nikol.data.local.models.UserPreferences
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 
+val Context.userDataStore: DataStore<Preferences> by preferencesDataStore(name = "user_prefs")
 class UserStorage(context: Context) {
-    private val sharedPreferences = createEncryptedSharedPreferences(context)
+    private val dataStore = context.userDataStore
     private val json = Json { ignoreUnknownKeys = true }
 
     companion object {
-        private const val PREFS_NAME = "user_prefs"
-        private const val KEY_USER = "user"
+        private val KEY_USER = stringPreferencesKey("user")
     }
-
-    private fun createEncryptedSharedPreferences(context: Context) =
-        EncryptedSharedPreferences.create(
-            context,
-            PREFS_NAME,
-            MasterKey.Builder(context).setKeyScheme(MasterKey.KeyScheme.AES256_GCM).build(),
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-
-    fun saveUser(user: UserPreferences) {
-        val userJson = json.encodeToString(UserPreferences.serializer(), user)
-        with(sharedPreferences.edit()) {
-            putString(KEY_USER, userJson)
-            apply()
+    suspend fun saveUser(user: UserPreferences) {
+        val userJson = json.encodeToString(user)
+        dataStore.edit { preferences ->
+            preferences[KEY_USER] = userJson
         }
     }
 
-    fun getUser(): UserPreferences? {
-        val userJson = sharedPreferences.getString(KEY_USER, null) ?: return null
-        return try {
-            json.decodeFromString(UserPreferences.serializer(), userJson)
-        } catch (e: Exception) {
-            null
-        }
+    fun getUserFlow(): Flow<UserPreferences?> {
+        return dataStore.data
+            .map { preferences ->
+                preferences[KEY_USER]?.let { userJson ->
+                    try {
+                        json.decodeFromString<UserPreferences>(userJson)
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
+            }
     }
 
-    fun clearUser() {
-        with(sharedPreferences.edit()) {
-            remove(KEY_USER)
-            apply()
+    suspend fun clearUser() {
+        dataStore.edit { preferences ->
+            preferences.remove(KEY_USER)
         }
     }
 }

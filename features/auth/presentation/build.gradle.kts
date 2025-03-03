@@ -51,6 +51,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     implementation(libs.androidx.navigation.compose)
 
+    implementation(libs.coil3.coil.network)
+    implementation(libs.coil3.coil.compose)
+
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)

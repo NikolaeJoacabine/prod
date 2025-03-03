@@ -27,7 +27,7 @@ class AuthFeatureImpl @Inject constructor() : FeatureApi {
             composable(
                 route = AuthFeatureScreens.ProfileScreen.route
             ) {
-               ProfileScreen()
+               ProfileScreen(navController)
             }
         }
     }
