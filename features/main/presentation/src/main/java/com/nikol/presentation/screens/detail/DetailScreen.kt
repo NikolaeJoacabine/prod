@@ -105,21 +105,6 @@ fun DetailScreen(
                             contentScale = ContentScale.Crop,
                         )
 
-                        // Кнопка назад с эффектом
-//                        IconButton(
-//                            onClick = { navController.popBackStack() },
-//                            modifier = Modifier
-//                                .offset(16.dp, 16.dp)
-//                                .background(Color.White.copy(0.9f), CircleShape)
-//                                .size(48.dp)
-//                        ) {
-//                            Icon(
-//                                painter = painterResource(R.drawable.arrow_back),
-//                                contentDescription = "Назад",
-//                                tint = Color(0xFF7A5AF8),
-//                                modifier = Modifier.size(24.dp)
-//                            )
-//                        }
                         IconButton(
                             onClick = { navController.popBackStack() },
                             modifier = Modifier

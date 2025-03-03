@@ -142,7 +142,11 @@ fun LibraryScreen(
                             items(currentState.library) { movie ->
                                 ItemMove(movie, navController, viewModel)
                             }
+                            item {
+                                Spacer(Modifier.height(25.dp))
+                            }
                         }
+
                         FloatingActionButton(
                             onClick = {
                                 navController.navigate(LibraryFeatureScreens.AddScreen.route)

@@ -1,2 +1,0 @@
-int drawable session_icon 0x0
-int string sessions 0x0

@@ -1,3 +1,0 @@
-com.nikol.presentation
-drawable session_icon
-string sessions

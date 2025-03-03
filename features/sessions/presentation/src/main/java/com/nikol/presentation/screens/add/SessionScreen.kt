@@ -53,6 +53,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -80,9 +81,9 @@ fun SessionScreen(
     viewModel: SessionsViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
-    var login by remember { mutableStateOf("") }
-    var genres by remember { mutableStateOf<List<String>>(listOf()) } // Управляемое состояние списка жанров
-    var showBottomSheet by remember { mutableStateOf(false) } // Управляем состояние показа листа
+    var login by rememberSaveable { mutableStateOf("") }
+    var genres by rememberSaveable { mutableStateOf<List<String>>(listOf()) } // Управляемое состояние списка жанров
+    var showBottomSheet by rememberSaveable { mutableStateOf(false) } // Управляем состояние показа листа
     val sessionState by viewModel.sessionState.collectAsState()
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
@@ -311,7 +312,7 @@ fun Bubble(text: String, size: Dp, offsetX: Dp, offsetY: Dp, onClick: () -> Unit
     val pressedColor = Color(0xFF744EDC)
 
     // Состояние для отслеживания нажатия
-    var isPressed by remember { mutableStateOf(false) }
+    var isPressed by rememberSaveable { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
