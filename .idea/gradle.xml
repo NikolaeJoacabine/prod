@@ -19,6 +19,8 @@
             <option value="$PROJECT_DIR$/common/network" />
             <option value="$PROJECT_DIR$/features" />
             <option value="$PROJECT_DIR$/features/auth" />
+            <option value="$PROJECT_DIR$/features/auth/data" />
+            <option value="$PROJECT_DIR$/features/auth/domain" />
             <option value="$PROJECT_DIR$/features/auth/presentation" />
             <option value="$PROJECT_DIR$/features/main" />
             <option value="$PROJECT_DIR$/features/main/data" />

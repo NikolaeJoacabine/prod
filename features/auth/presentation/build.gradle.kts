@@ -56,4 +56,6 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(project(":common:navigation"))
+    implementation(project(":features:auth:data"))
+    implementation(project(":features:auth:domain"))
 }
