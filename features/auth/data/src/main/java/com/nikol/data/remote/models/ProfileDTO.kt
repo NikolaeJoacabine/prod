@@ -8,6 +8,6 @@ import kotlinx.serialization.Serializable
 data class ProfileDTO(
     @SerialName("username") val userName: String,
     @SerialName("watched_count")val watchedCount: Int,
-    @SerialName("watchilst_count")val watchlistCount: Int,
+    @SerialName("watchlist_count")val watchlistCount: Int,
     @SerialName("watched_films")val watchedFilms: List<MoviesProfileDTO>
 )

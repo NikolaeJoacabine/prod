@@ -26,12 +26,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-
+        val list = listOf("library_feature_navigation", "sessions_feature_navigation", "profile_feature_navigation")
         setContent {
             ProdTheme {
                 AppContent(
                     bottomBarItems = bottomBarItems.toList()
-                        .sortedBy { it.navigationRoute },
+                        .sortedBy { list.indexOf(it.navigationRoute) },
                     featureNavigationApis = featureNavigationApis.toList()
                         .sortedBy { it.navigationRoute }
                 )

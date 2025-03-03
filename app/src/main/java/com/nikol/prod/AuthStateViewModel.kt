@@ -34,26 +34,30 @@ class AuthStateViewModel @Inject constructor(
     private fun checkAuthStatus() {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
-//            delay(2000)//для теста
-//            _authState.value = AuthState.Authenticated
-            val credentials = getCurrentUserUseCase.invoke()
-            if (credentials != null) {
-                when (val result = loginUseCase.invoke(credentials.first, credentials.second)) {
-                    is RemoteObtainingLoginResult.Success -> {
-                        _authState.value = AuthState.Authenticated
-                    }
-                    is RemoteObtainingLoginResult.LoginError -> {
-                        logoutUseCase.invoke()
+
+            // Собираем Flow и получаем текущие credentials
+            getCurrentUserUseCase.invoke()
+                .collect { credentials ->
+                    if (credentials != null) {
+                        // Если credentials есть, пытаемся выполнить логин
+                        when (val result = loginUseCase.invoke(credentials.first, credentials.second)) {
+                            is RemoteObtainingLoginResult.Success -> {
+                                _authState.value = AuthState.Authenticated
+                            }
+                            is RemoteObtainingLoginResult.LoginError -> {
+                                logoutUseCase.invoke()
+                                _authState.value = AuthState.Unauthenticated
+                            }
+                            is RemoteObtainingLoginResult.NetworkError -> {
+                                _authState.value = AuthState.Error(result.message)
+                            }
+                            else -> {}
+                        }
+                    } else {
+                        // Если credentials нет, пользователь не аутентифицирован
                         _authState.value = AuthState.Unauthenticated
                     }
-                    is RemoteObtainingLoginResult.NetworkError -> {
-                        _authState.value = AuthState.Error(result.message)
-                    }
-                    else -> {}
                 }
-            } else {
-                _authState.value = AuthState.Unauthenticated
-            }
         }
     }
 

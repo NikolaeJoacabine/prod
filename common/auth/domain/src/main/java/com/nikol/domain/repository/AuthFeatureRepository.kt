@@ -2,13 +2,12 @@ package com.nikol.domain.repository
 
 import com.nikol.domain.results.RemoteObtainingCreateUser
 import com.nikol.domain.results.RemoteObtainingLoginResult
+import kotlinx.coroutines.flow.Flow
 
 interface AuthFeatureRepository {
     suspend fun signup(email: String, password: String): RemoteObtainingCreateUser
     suspend fun login(email: String, password: String): RemoteObtainingLoginResult
     suspend fun logout()
-    suspend fun getCurrentUser(): Pair<String, String>?
-//    suspend fun getUserInfo()
-//    suspend fun getUserHistory()
+    suspend fun getCurrentUser(): Flow<Pair<String, String>?>
     fun getToken(): String?
 }

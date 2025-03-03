@@ -52,5 +52,8 @@ dependencies {
     implementation(libs.logging.interceptor)
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
-    implementation(libs.androidx.security.crypto)
+
+
+    implementation (libs.androidx.datastore.preferences)
+    implementation (libs.androidx.datastore.core)
 }
