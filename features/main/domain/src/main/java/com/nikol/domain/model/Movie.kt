@@ -8,6 +8,6 @@ data class Movie(
     val imageUrl: String? = null,
     val rating: Double? = null,
     val filmUrl: String? = null,
-    val geners: List<String> = emptyList(),
+    val genres: List<String>? = null,
     val isWatchlist: Boolean = false
 )
