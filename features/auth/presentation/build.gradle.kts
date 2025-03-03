@@ -61,4 +61,6 @@ dependencies {
     implementation(project(":common:navigation"))
     implementation(project(":features:auth:data"))
     implementation(project(":features:auth:domain"))
+    implementation(project(":features:main:presentation"))
+    implementation(project(":features:main:domain"))
 }
