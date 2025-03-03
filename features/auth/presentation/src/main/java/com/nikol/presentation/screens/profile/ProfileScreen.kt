@@ -1,21 +1,15 @@
 package com.nikol.presentation.screens.profile
 
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,49 +26,34 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import com.nikol.domain.model.Movie
 import com.nikol.domain.models.MoviesProfile
 import com.nikol.domain.respons.RemoteObtainingUserProfile
 import com.nikol.presentation.R
+import com.nikol.presentation.nav.LibraryFeatureScreens
 
 
 @Composable
@@ -190,7 +169,7 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
                             horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             items(currentSate.profile.watchedFilms) {
-                                MovieCard(film = it) // Пример изображения
+                                MovieCard(navController, film = it) // Пример изображения
                             }
                         }
 
@@ -208,13 +187,26 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
 // Карточка фильма с изображением
 @Composable
 private fun MovieCard(
+    navController: NavController,
     modifier: Modifier = Modifier,
     film: MoviesProfile
 ) {
+    val movie = Movie(
+        id = film.id,
+        title = film.title,
+        description = film.description,
+        year = film.year,
+        imageUrl = film.imageUrl,
+        rating = film.rating,
+        filmUrl = film.filmUrl,
+        genres = film.genres,
+        isWatchlist = film.isWatchlist
+    )
     Card(
         modifier = modifier
             .width(280.dp)
-            .height(180.dp),
+            .height(180.dp)
+            .clickable{navController.navigate(LibraryFeatureScreens.DetailScreen.withObject(movie))},
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(Color.Transparent), // Прозрачный фон, так как у нас картинка
         elevation = CardDefaults.cardElevation(8.dp) // Оставляем тень
@@ -260,7 +252,7 @@ private fun MovieCard(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     ChipView(
-                        text = film.geners.firstOrNull() ?: "",
+                        text = film.genres.firstOrNull() ?: "",
                         painter = painterResource(R.drawable.theaters)
                     )
                     RatingBadge(film.rating ?: 0.0)

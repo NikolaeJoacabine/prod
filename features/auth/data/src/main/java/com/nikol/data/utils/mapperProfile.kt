@@ -21,6 +21,6 @@ fun MoviesProfileDTO.toDomain() =
         description = this.description ?: "",
         imageUrl = this.imageUrl,
         rating = this.rating,
-        geners = this.genres,
+        genres = this.genres,
         isWatchlist = this.isWatchlist
     )
