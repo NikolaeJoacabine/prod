@@ -10,5 +10,7 @@ fun SessionMovieDTO.toDDomain() =
         year = this.year ?: 0,
         description = this.description ?: "",
         imageUrl = this.imageUrl ?: "",
-        rating = this.rating ?: 0.0
+        rating = this.rating ?: 0.0,
+        genres = this.genres,
+        filmUrl = this.filmUrl
     )
