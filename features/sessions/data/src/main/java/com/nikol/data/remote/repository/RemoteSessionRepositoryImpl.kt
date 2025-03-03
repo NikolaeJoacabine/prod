@@ -1,20 +1,11 @@
 package com.nikol.data.remote.repository
 
-import com.nikol.data.remote.models.GenreDTO
 import com.nikol.data.remote.models.ListGenresDTO
-import com.nikol.data.remote.models.SessionMovieDTO
 import com.nikol.data.remote.network.SessionApi
 import com.nikol.data.utils.toDDomain
-import com.nikol.domain.model.Genre
-
 import com.nikol.domain.repository.AuthFeatureRepository
-import com.nikol.domain.results.RemoteObtainingGenres
-import com.nikol.domain.results.RemoteObtainingMovies
+import com.nikol.domain.results.RemoteObtainingAddResult
 import com.nikol.domain.results.RemoteObtainingSession
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import kotlin.math.log
 
 class RemoteSessionRepositoryImpl(
     private val sessionApi: SessionApi,
@@ -36,12 +27,15 @@ class RemoteSessionRepositoryImpl(
             RemoteObtainingSession.Error("Ошибка ${e.message}")
         }
     }
-
-    override suspend fun getLikedMovies(): RemoteObtainingMovies {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getCommonGenres(): RemoteObtainingGenres {
-        TODO("Not yet implemented")
+    override suspend fun addMovie(id: Int): RemoteObtainingAddResult {
+        return try {
+            val result = sessionApi.addMovie(
+                id,
+                authToken = authToken
+            )
+            RemoteObtainingAddResult.Success
+        } catch (e: Exception) {
+            RemoteObtainingAddResult.Error("Ошибка ${e.message}")
+        }
     }
 }

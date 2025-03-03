@@ -1,11 +1,9 @@
 package com.nikol.domain.repository
 
-import com.nikol.domain.results.RemoteObtainingGenres
-import com.nikol.domain.results.RemoteObtainingMovies
+import com.nikol.domain.results.RemoteObtainingAddResult
 import com.nikol.domain.results.RemoteObtainingSession
 
 interface SessionFeatureRepository {
     suspend fun addUserIntoSession(login: String, genres: List<String>): RemoteObtainingSession
-    suspend fun getLikedMovies(): RemoteObtainingMovies
-    suspend fun getCommonGenres(): RemoteObtainingGenres
+    suspend fun addMovie(id: Int): RemoteObtainingAddResult
 }

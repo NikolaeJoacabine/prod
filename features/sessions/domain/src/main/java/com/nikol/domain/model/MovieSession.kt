@@ -6,5 +6,7 @@ data class MovieSession(
     val year: Int? = null,
     val description: String,
     val imageUrl: String,
-    val rating: Double? = null
+    val genres: List<String>? = null,
+    val rating: Double? = null,
+    val filmUrl: String? = null
 )

@@ -15,6 +15,7 @@ import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +26,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,6 +37,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -117,7 +121,7 @@ fun SessionScreen(viewModel: SessionsViewModel = hiltViewModel()) {
                     when (val currentState = sessionState) {
                         is RemoteObtainingSession.Success -> {
                             items(currentState.movies) { movie ->
-                                ItemMoveSearch(movie, onClick = {})
+                                ItemMoveSearch(movie, onClick = {viewModel.addMovie(movie.id)})
                             }
                         }
 
@@ -343,36 +347,6 @@ fun ItemMoveSearch(item: MovieSession, onClick: () -> Unit) {
                         .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)),
                     contentScale = ContentScale.Crop,
                 )
-
-                IconButton(
-                    onClick = {
-                        isFavorite = !isFavorite
-                        onClick()
-//                        onFavoriteClick()
-                    },
-                    modifier = Modifier
-                        .size(36.dp)
-                ) {
-                    AnimatedContent(
-                        targetState = isFavorite,
-                        transitionSpec = {
-                            fadeIn() with fadeOut()
-                        },
-                        label = ""
-                    ) { favorite ->
-                        Icon(
-                            imageVector = if (favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = "Избранное",
-                            tint = if (favorite) Color.Red else Color(0xFF744EDC),
-                            modifier = Modifier
-                                .graphicsLayer {
-                                    rotationZ = rotation.value
-                                    scaleX = scale.value
-                                    scaleY = scale.value
-                                }
-                        )
-                    }
-                }
             }
 
             Column(
@@ -386,7 +360,7 @@ fun ItemMoveSearch(item: MovieSession, onClick: () -> Unit) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = item.title.toString(),
+                        text = item.title,
                         color = Color(0xFF7A5AF8),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
@@ -432,24 +406,61 @@ fun ItemMoveSearch(item: MovieSession, onClick: () -> Unit) {
                         modifier = Modifier.padding(top = 4.dp)
                     ) // Уменьшено с 6.dp
                 }
+                item.genres?.let {
+                    Text(
+                        text = it.take(2).joinToString(separator = ", "),
+                        color = Color(0xFF333333),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(top = 4.dp)
+                    ) // Уменьшено с 8.dp
+                }
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
-                Text(
-                    text = "Жанр не указан",
-                    color = Color(0xFF333333),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(top = 4.dp)
-                ) // Уменьшено с 8.dp
-
-                Text(
-                    text = item.description.toString(),
-                    color = Color(0xFF333333),
-                    fontSize = 14.sp,
-                    lineHeight = 18.sp,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(top = 8.dp)
-                )
+                    Text(
+                        text = item.description.toString(),
+                        color = Color(0xFF333333),
+                        fontSize = 14.sp,
+                        lineHeight = 18.sp,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                    IconButton(
+                        onClick = {
+                            isFavorite = !isFavorite
+                            onClick()
+                        },
+                        modifier = Modifier
+                            .size(36.dp)
+                    ) {
+                        AnimatedContent(
+                            targetState = isFavorite,
+                            transitionSpec = {
+                                fadeIn() with fadeOut()
+                            },
+                            label = ""
+                        ) { favorite ->
+                            Icon(
+                                imageVector = if (favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                                contentDescription = "Избранное",
+                                tint = if (favorite) Color.Red else Color(0xFF744EDC),
+                                modifier = Modifier
+                                    .graphicsLayer {
+                                        rotationZ = rotation.value
+                                        scaleX = scale.value
+                                        scaleY = scale.value
+                                    }
+                            )
+                        }
+                    }
+                }
             }
         }
     }
