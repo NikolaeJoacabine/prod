@@ -45,7 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.nikol.presentation.R
 
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
