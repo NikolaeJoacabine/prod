@@ -1,11 +1,10 @@
 package com.nikol.data.remote.network
 
-import com.nikol.data.remote.models.ImageUrl
+import com.nikol.data.remote.models.SuccessMessage
 import com.nikol.data.remote.models.MovieDTO
-import dagger.Module
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -23,11 +22,12 @@ interface LibraryApi {
 
 
     @Multipart
-    @POST("/films/add-image")
+    @POST("/watchlist/add-with-image")
     suspend fun addImage(
         @Part image: MultipartBody.Part,
-        @Header("Authorization") authToken: String
-    ): ImageUrl
+        @Header("Authorization") authToken: String,
+        @Part("film") film: RequestBody
+    ): SuccessMessage
 
 
     @GET("/films/")
@@ -42,8 +42,21 @@ interface LibraryApi {
         @Header("Authorization") authToken: String
     )
 
-    @POST("/films/{film_id}")
-    suspend fun getFilm(@Path("film_id") id: Int) : MovieDTO
+    @GET("/films/{film_id}")
+    suspend fun getFilm(
+        @Path("film_id") id: Int,
+        @Header("Authorization") authToken: String
+    ) : MovieDTO
 
+    @DELETE("/watchlist/remove/{film_id}")
+    suspend fun deleteFilm(
+        @Path("film_id") id: Int,
+        @Header("Authorization") authToken: String
+    )
 
+    @POST("/watched/add/{film_id}")
+    suspend fun addInWatched(
+        @Path("film_id") id: Int,
+        @Header("Authorization") authToken: String
+    )
 }

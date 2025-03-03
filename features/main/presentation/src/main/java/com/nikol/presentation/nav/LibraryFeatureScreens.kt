@@ -7,7 +7,7 @@ import org.json.JSONObject
 sealed class LibraryFeatureScreens(val route: String) {
     data object LibraryScreen : LibraryFeatureScreens(route = "library_screen")
     data object AddScreen : LibraryFeatureScreens(route = "add_screen")
-    data object DetailScreen : LibraryFeatureScreens(route = "detail_screen") {
+    data object DetailScreen : LibraryFeatureScreens(route = "detail_screen/{movieJson}") {
         fun withObject(movie: Movie): String {
             val json = JSONObject().apply {
                 put("id", movie.id)
@@ -17,7 +17,6 @@ sealed class LibraryFeatureScreens(val route: String) {
                 put("imageUrl", movie.imageUrl)
                 put("rating", movie.rating ?: JSONObject.NULL)
             }.toString()
-
             return "detail_screen/${Uri.encode(json)}"
         }
 

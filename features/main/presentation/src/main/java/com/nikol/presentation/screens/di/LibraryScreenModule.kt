@@ -1,6 +1,7 @@
 package com.nikol.presentation.screens.di
 
 import com.nikol.domain.repository.MainFeatureRepository
+import com.nikol.domain.use_cases.AddInWatchedUseCase
 import com.nikol.domain.use_cases.AddMovieUseCase
 import com.nikol.domain.use_cases.AddNewMovieUseCase
 import com.nikol.domain.use_cases.DeleteMovieUseCase
@@ -39,5 +40,9 @@ object LibraryScreenModule {
     @Provides
     fun provideGetFilmDetail(mainFeatureRepository: MainFeatureRepository): GetFilmUseCase =
         GetFilmUseCase(mainFeatureRepository)
+
+    @Provides
+    fun provideAddInWatched(mainFeatureRepository: MainFeatureRepository): AddInWatchedUseCase =
+        AddInWatchedUseCase(mainFeatureRepository)
 
 }

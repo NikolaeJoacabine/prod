@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nikol.domain.results.RemoteObtainingLibrary
 import com.nikol.domain.results.RemoteObtainingLibraryActionResult
+import com.nikol.domain.use_cases.AddInWatchedUseCase
 import com.nikol.domain.use_cases.DeleteMovieUseCase
 import com.nikol.domain.use_cases.InspectLibraryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
     private val inspectLibraryUseCase: InspectLibraryUseCase,
-    private val deleteMovieUseCase: DeleteMovieUseCase
+    private val deleteMovieUseCase: DeleteMovieUseCase,
+    private val addInWatchedUseCase: AddInWatchedUseCase
 ) : ViewModel() {
 
     private val _libraryState =
@@ -44,11 +46,30 @@ class LibraryViewModel @Inject constructor(
         }
     }
 
-    fun deleteMovie() {
+    fun deleteMovie(id: Int) {
         viewModelScope.launch {
             _actionState.value = RemoteObtainingLibraryActionResult.Loading
-            deleteMovieUseCase.invoke().let {
-                _actionState.value = it
+            when (val result = deleteMovieUseCase.invoke(id)) {
+                is RemoteObtainingLibraryActionResult.Success -> {
+                    getLibrary()
+                    _actionState.value = result
+                }
+
+                else -> _actionState.value = result
+            }
+        }
+    }
+
+    fun addInWatch(id: Int) {
+        viewModelScope.launch {
+            _actionState.value = RemoteObtainingLibraryActionResult.Loading
+            when (val result = addInWatchedUseCase.invoke(id)) {
+                is RemoteObtainingLibraryActionResult.Success -> {
+                    getLibrary()
+                    _actionState.value = result
+                }
+
+                else -> _actionState.value = result
             }
         }
     }

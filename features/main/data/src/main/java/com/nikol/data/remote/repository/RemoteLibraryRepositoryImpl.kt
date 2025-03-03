@@ -4,11 +4,15 @@ import android.util.Log
 import com.nikol.data.remote.models.MovieDTO
 import com.nikol.data.remote.network.LibraryApi
 import com.nikol.data.utils.toDomain
+import com.nikol.data.utils.toEntity
+import com.nikol.domain.model.Movie
 import com.nikol.domain.repository.AuthFeatureRepository
 import com.nikol.domain.results.RemoteObtainingLibrary
 import com.nikol.domain.results.RemoteObtainingLibraryActionResult
 import com.nikol.domain.results.RemoteObtainingMovie
+import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
@@ -38,23 +42,32 @@ class RemoteLibraryRepositoryImpl(
         }
     }
 
-    override suspend fun deleteMovie(): RemoteObtainingLibraryActionResult {
-        TODO("Not yet implemented")
+    override suspend fun deleteMovie(id: Int): RemoteObtainingLibraryActionResult {
+        return try {
+            val response = libraryApi.deleteFilm(id, authToken)
+            RemoteObtainingLibraryActionResult.Success
+        } catch (e: Exception) {
+            RemoteObtainingLibraryActionResult.Error("${e.message}")
+        }
     }
 
-    override suspend fun addNewFilm(byte: ByteArray): RemoteObtainingLibraryActionResult {
+    override suspend fun addNewFilm(
+        byte: ByteArray,
+        movie: Movie
+    ): RemoteObtainingLibraryActionResult {
         return try {
-            val requestBody = byte.toRequestBody("image/jpeg".toMediaType())
 
+
+            val requestBody = byte.toRequestBody("image/jpeg".toMediaType())
             val imagePart = MultipartBody.Part.createFormData("file", "image.jpg", requestBody)
+
+            val filmJson = Json.encodeToString(movie.toEntity())
+            val filmPart = filmJson.toRequestBody("application/json".toMediaTypeOrNull())
+
             val result = libraryApi.addImage(
                 image = imagePart,
-                authToken = authToken
-            )
-            Log.d(
-                "Image", "Image URL: ${
-                    result.image
-                }"
+                authToken = authToken,
+                film = filmPart
             )
             RemoteObtainingLibraryActionResult.Success
         } catch (e: Exception) {
@@ -77,10 +90,19 @@ class RemoteLibraryRepositoryImpl(
 
     override suspend fun getDetailMovie(movieDTO: MovieDTO): RemoteObtainingMovie {
         return try {
-            val response = libraryApi.getFilm(movieDTO.id ?: 0)
+            val response = libraryApi.getFilm(movieDTO.id ?: 0, authToken)
             RemoteObtainingMovie.Success(response.toDomain())
         } catch (e: Exception) {
             RemoteObtainingMovie.Error(e.message.toString())
+        }
+    }
+
+    override suspend fun addInWatched(id: Int): RemoteObtainingLibraryActionResult {
+        return try {
+            val response = libraryApi.addInWatched(id, authToken)
+            RemoteObtainingLibraryActionResult.Success
+        } catch (e: Exception) {
+            RemoteObtainingLibraryActionResult.Error(e.message.toString())
         }
     }
 }
