@@ -257,51 +257,45 @@ fun BubbleLayout(genres: List<String>, onGenreClick: (String) -> Unit) {
         Bubble(
             text = "драма",
             size = 80.dp,
-            offsetX = 20.dp,
+            offsetX = 40.dp,
             offsetY = 40.dp,
             onClick = { onGenreClick("драма") })
         Bubble(
             text = "комедия",
             size = 90.dp,
-            offsetX = 120.dp,
+            offsetX = 140.dp,
             offsetY = 0.dp,
             onClick = { onGenreClick("комедия") })
         Bubble(
             text = "триллер",
             size = 90.dp,
             offsetX = 160.dp,
-            offsetY = 110.dp,
+            offsetY = 220.dp,
             onClick = { onGenreClick("триллер") })
         Bubble(
             text = "боевик",
             size = 70.dp,
-            offsetX = 240.dp,
+            offsetX = 260.dp,
             offsetY = 40.dp,
             onClick = { onGenreClick("боевик") })
         Bubble(
             text = "фантастика",
             size = 110.dp,
-            offsetX = 20.dp,
-            offsetY = 150.dp,
+            offsetX = 40.dp,
+            offsetY = 140.dp,
             onClick = { onGenreClick("фантастика") })
         Bubble(
             text = "детектив",
-            size = 90.dp,
-            offsetX = 260.dp,
-            offsetY = 160.dp,
+            size = 110.dp,
+            offsetX = 190.dp,
+            offsetY = 110.dp,
             onClick = { onGenreClick("детектив") })
         Bubble(
             text = "ужас",
             size = 50.dp,
-            offsetX = 30.dp,
-            offsetY = 270.dp,
+            offsetX = 50.dp,
+            offsetY = 260.dp,
             onClick = { onGenreClick("ужас") })
-        Bubble(
-            text = "романтика",
-            size = 100.dp,
-            offsetX = 130.dp,
-            offsetY = 220.dp,
-            onClick = { onGenreClick("романтика") })
     }
 }
 
