@@ -22,11 +22,11 @@ class RemoteLibraryRepositoryImpl(
     private val authFeatureRepository: AuthFeatureRepository
 ) : RemoteLibraryRepository {
 
-    private val authToken = "Bearer ${authFeatureRepository.getToken()}"
+
     override suspend fun getLibrary(): RemoteObtainingLibrary {
         return try {
             val result = libraryApi.getLibrary(
-                authToken = authToken
+                authToken = authFeatureRepository.getToken()
             )
             RemoteObtainingLibrary.Success(result.map { it.toDomain() })
         } catch (e: Exception) {
@@ -36,7 +36,7 @@ class RemoteLibraryRepositoryImpl(
 
     override suspend fun addInLibrary(id: Int): RemoteObtainingLibraryActionResult {
         return try {
-            val response = libraryApi.addFilm(id, authToken)
+            val response = libraryApi.addFilm(id, authFeatureRepository.getToken())
             RemoteObtainingLibraryActionResult.Success
         } catch (e: Exception) {
             RemoteObtainingLibraryActionResult.Error("${e.message}")
@@ -45,7 +45,7 @@ class RemoteLibraryRepositoryImpl(
 
     override suspend fun deleteMovie(id: Int): RemoteObtainingLibraryActionResult {
         return try {
-            val response = libraryApi.deleteFilm(id, authToken)
+            val response = libraryApi.deleteFilm(id, authFeatureRepository.getToken())
             RemoteObtainingLibraryActionResult.Success
         } catch (e: Exception) {
             RemoteObtainingLibraryActionResult.Error("${e.message}")
@@ -67,7 +67,7 @@ class RemoteLibraryRepositoryImpl(
 
             val result = libraryApi.addImage(
                 image = imagePart,
-                authToken = authToken,
+                authToken = authFeatureRepository.getToken(),
                 film = filmPart
             )
             RemoteObtainingLibraryActionResult.Success
@@ -80,7 +80,7 @@ class RemoteLibraryRepositoryImpl(
 
     override suspend fun searchFilms(str: String): RemoteObtainingLibrary {
         return try {
-            val response = libraryApi.searchFilms(str, authToken)
+            val response = libraryApi.searchFilms(str, authFeatureRepository.getToken())
 
             RemoteObtainingLibrary.Success(response.map { it.toDomain() })
         } catch (e: Exception) {
@@ -91,7 +91,7 @@ class RemoteLibraryRepositoryImpl(
 
     override suspend fun getDetailMovie(movieDTO: MovieDTO): RemoteObtainingMovie {
         return try {
-            val response = libraryApi.getFilm(movieDTO.id ?: 0, authToken)
+            val response = libraryApi.getFilm(movieDTO.id ?: 0, authFeatureRepository.getToken())
             RemoteObtainingMovie.Success(response.toDomain())
         } catch (e: Exception) {
             RemoteObtainingMovie.Error(e.message.toString())
@@ -100,7 +100,7 @@ class RemoteLibraryRepositoryImpl(
 
     override suspend fun addInWatched(id: Int): RemoteObtainingLibraryActionResult {
         return try {
-            val response = libraryApi.addInWatched(id, authToken)
+            val response = libraryApi.addInWatched(id, authFeatureRepository.getToken())
             RemoteObtainingLibraryActionResult.Success
         } catch (e: Exception) {
             RemoteObtainingLibraryActionResult.Error(e.message.toString())
@@ -109,7 +109,7 @@ class RemoteLibraryRepositoryImpl(
 
     override suspend fun getTopics(name: String, year: Int): RemoteObtainingTopics {
         return try {
-            val response = libraryApi.getTopics(name, year)
+            val response = libraryApi.getTopics(name, year, authFeatureRepository.getToken())
             RemoteObtainingTopics.Success(response)
         } catch (e: Exception) {
             RemoteObtainingTopics.Error(e.message.toString())

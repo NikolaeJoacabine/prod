@@ -28,10 +28,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -53,6 +56,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -80,6 +84,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -91,6 +96,8 @@ import com.nikol.domain.model.Movie
 import com.nikol.domain.results.RemoteObtainingLibrary
 import com.nikol.presentation.R
 import com.nikol.presentation.nav.LibraryFeatureScreens
+import com.nikol.presentation.screens.detail.ChipView
+import com.nikol.presentation.screens.library.ShimmerFilm
 import java.io.ByteArrayOutputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -115,11 +122,12 @@ fun AddScreen(
         selectedImages = uri
     }
 
-    //Добавка
+    // Добавка
     var nameFilm by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var janr by remember { mutableStateOf("") }
     var link by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -136,7 +144,10 @@ fun AddScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(trackColor = Color(0xFF7A5AF8))
+                    LazyColumn {
+                        item { Spacer(Modifier.height(80.dp)) }
+                        items(5) { ShimmerFilm() }
+                    }
                 }
 
                 is RemoteObtainingLibrary.Error -> {
@@ -168,9 +179,7 @@ fun AddScreen(
 
                 is RemoteObtainingLibrary.Success -> {
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
-                        item {
-                            Spacer(Modifier.height(80.dp))
-                        }
+                        item { Spacer(Modifier.height(80.dp)) }
                         items(currentState.library) { movie ->
                             ItemMoveSearch(movie, navController) {
                                 viewModel.addMove(movie.id ?: 0)
@@ -215,7 +224,6 @@ fun AddScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-
                 TextField(
                     value = searchText,
                     onValueChange = { searchText = it },
@@ -249,7 +257,8 @@ fun AddScreen(
                                 tint = Color(0xFF7A5AF8),
                                 modifier = Modifier
                                     .clickable { searchText = "" }
-                                    .size(24.dp))
+                                    .size(24.dp)
+                            )
                         }
                     },
                     colors = TextFieldDefaults.colors(
@@ -263,13 +272,23 @@ fun AddScreen(
                     ),
                     shape = RoundedCornerShape(24.dp),
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search), // Добавляем действие поиска
+                    keyboardActions = KeyboardActions(
+                        onSearch = {
+                            focusManager.clearFocus() // Скрываем клавиатуру
+                            viewModel.searchFilms(searchText) // Выполняем поиск
+                        }
+                    ),
                     textStyle = LocalTextStyle.current.copy(
                         fontSize = 16.sp,
                         lineHeight = 20.sp
                     )
                 )
                 IconButton(
-                    onClick = { viewModel.searchFilms(searchText) },
+                    onClick = {
+                        focusManager.clearFocus() // Скрываем клавиатуру
+                        viewModel.searchFilms(searchText) // Выполняем поиск
+                    },
                     modifier = Modifier
                         .size(48.dp)
                         .background(
@@ -285,8 +304,6 @@ fun AddScreen(
                     )
                 }
             }
-
-
         }
     }
 
@@ -393,7 +410,7 @@ fun AddScreen(
                             focusedBorderColor = Color(0xFF7A5AF8),
                             unfocusedBorderColor = Color(0xFFCCCCCC),
                             focusedLabelColor = Color(0xFF7A5AF8),
-                            cursorColor = Color.Transparent, // Скрываем курсор
+                            cursorColor = Color.Transparent,
                             focusedTrailingIconColor = Color(0xFF7A5AF8),
                             unfocusedTrailingIconColor = Color(0xFF7A5AF8)
                         ),
@@ -405,7 +422,7 @@ fun AddScreen(
                                 tint = Color(0xFF7A5AF8)
                             )
                         },
-                        readOnly = true // Делаем поле только для чтения
+                        readOnly = true
                     )
 
                     ExposedDropdownMenu(
@@ -439,7 +456,6 @@ fun AddScreen(
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
-
 
                 OutlinedTextField(
                     value = link,
@@ -576,7 +592,7 @@ fun AddScreen(
 @Composable
 fun ItemMoveSearch(item: Movie, navController: NavController, onClick: () -> Unit) {
 
-    var isFavorite by remember { mutableStateOf(false) }
+    var isFavorite by remember { mutableStateOf(item.isWatchlist) }
     val rotation = animateFloatAsState(targetValue = if (isFavorite) 360f else 0f, label = "")
     val scale = animateFloatAsState(targetValue = if (isFavorite) 1.2f else 1f, label = "")
     Card(
@@ -679,13 +695,15 @@ fun ItemMoveSearch(item: Movie, navController: NavController, onClick: () -> Uni
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "Жанр не указан",
-                        color = Color(0xFF333333),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.padding(top = 4.dp)
-                    ) // Уменьшено с 8.dp
+                    if (item.genres.orEmpty().isNotEmpty()) {
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(item.genres.orEmpty().take(2)) { genre ->
+                                ChipView(text = genre)
+                            }
+                        }
+                    }
                     IconButton(
                         onClick = {
                             isFavorite = !isFavorite

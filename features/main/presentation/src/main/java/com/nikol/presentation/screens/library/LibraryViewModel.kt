@@ -33,9 +33,6 @@ class LibraryViewModel @Inject constructor(
         MutableStateFlow<RemoteObtainingLibraryActionResult>(RemoteObtainingLibraryActionResult.Neutral)
     val actionState = _actionState.asStateFlow()
 
-    init {
-        getLibrary()
-    }
 
     fun getLibrary() {
         viewModelScope.launch {

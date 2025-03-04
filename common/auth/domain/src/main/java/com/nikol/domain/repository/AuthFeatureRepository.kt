@@ -9,5 +9,5 @@ interface AuthFeatureRepository {
     suspend fun login(email: String, password: String): RemoteObtainingLoginResult
     suspend fun logout()
     suspend fun getCurrentUser(): Flow<Pair<String, String>?>
-    fun getToken(): String?
+    suspend fun getToken(): String
 }

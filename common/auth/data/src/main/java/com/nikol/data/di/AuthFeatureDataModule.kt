@@ -3,6 +3,7 @@ package com.nikol.data.di
 import android.content.Context
 import com.nikol.data.local.repository.LocalAuthFeaturesRepository
 import com.nikol.data.local.repository.LocalAuthFeaturesRepositoryImpl
+import com.nikol.data.local.storage.TokenStorage
 import com.nikol.data.local.storage.UserStorage
 import com.nikol.data.remote.network.AuthApi
 import com.nikol.data.remote.repository.RemoteAuthFeatureRepository
@@ -34,6 +35,11 @@ object AuthFeatureDataModule {
         return UserStorage(context)
     }
 
+    @Provides
+    @Singleton
+    fun provideTokenStorage(@ApplicationContext context: Context): TokenStorage {
+        return TokenStorage((context))
+    }
 
     @Provides
     @Singleton
@@ -51,8 +57,13 @@ object AuthFeatureDataModule {
     @Singleton
     fun provideAuthFeatureRepository(
         remoteAuthFeatureRepository: RemoteAuthFeatureRepository,
-        localAuthFeaturesRepository: LocalAuthFeaturesRepository
+        localAuthFeaturesRepository: LocalAuthFeaturesRepository,
+        tokenStorage: TokenStorage
     ): AuthFeatureRepository {
-        return AuthFeatureRepositoryImpl(remoteAuthFeatureRepository, localAuthFeaturesRepository)
+        return AuthFeatureRepositoryImpl(
+            remoteAuthFeatureRepository,
+            localAuthFeaturesRepository,
+            tokenStorage
+        )
     }
 }

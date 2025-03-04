@@ -46,7 +46,7 @@ interface LibraryApi {
     suspend fun getFilm(
         @Path("film_id") id: Int,
         @Header("Authorization") authToken: String
-    ) : MovieDTO
+    ): MovieDTO
 
     @DELETE("/watchlist/remove/{film_id}")
     suspend fun deleteFilm(
@@ -63,6 +63,7 @@ interface LibraryApi {
     @GET("/films/discuss/{film_name}/{year}")
     suspend fun getTopics(
         @Path("film_name") name: String,
-        @Path("year") year: Int
-    ) : List<String>
+        @Path("year") year: Int,
+        @Header("Authorization") authToken: String
+    ): List<String>
 }
