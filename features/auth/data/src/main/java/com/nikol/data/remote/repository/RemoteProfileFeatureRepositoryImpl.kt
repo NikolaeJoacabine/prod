@@ -9,11 +9,11 @@ class RemoteProfileFeatureRepositoryImpl(
     private val userApi: UserApi,
     private val authFeatureRepository: AuthFeatureRepository
 ) : RemoteProfileFeatureRepository {
-    private val authToken = "Bearer ${authFeatureRepository.getToken()}"
+
 
     override suspend fun getProfile(): RemoteObtainingUserProfile {
         return try {
-            val response = userApi.getProfile(authToken)
+            val response = userApi.getProfile(authFeatureRepository.getToken())
             RemoteObtainingUserProfile.Success(response.toDomain())
         } catch (e: Exception) {
             RemoteObtainingUserProfile.Error(e.message.toString())

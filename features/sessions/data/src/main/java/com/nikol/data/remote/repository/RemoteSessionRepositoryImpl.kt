@@ -12,13 +12,12 @@ class RemoteSessionRepositoryImpl(
     private val authFeatureRepository: AuthFeatureRepository
 ) : RemoteSessionRepository  {
 
-    private val authToken = "Bearer ${authFeatureRepository.getToken()}"
 
     override suspend fun addIntoSession(login:String, genres: List<String>): RemoteObtainingSession {
         return try {
             val requestBody = ListGenresDTO(genres)
             val result = sessionApi.addUserIntoSession(
-                authToken = authToken,
+                authToken = authFeatureRepository.getToken(),
                 login,
                 requestBody = requestBody
             )
@@ -31,7 +30,7 @@ class RemoteSessionRepositoryImpl(
         return try {
             val result = sessionApi.addMovie(
                 id,
-                authToken = authToken
+                authToken = authFeatureRepository.getToken()
             )
             RemoteObtainingAddResult.Success
         } catch (e: Exception) {

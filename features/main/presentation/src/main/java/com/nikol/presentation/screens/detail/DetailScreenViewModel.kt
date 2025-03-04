@@ -11,6 +11,7 @@ import com.nikol.domain.use_cases.DeleteMovieUseCase
 import com.nikol.domain.use_cases.GetFilmUseCase
 import com.nikol.domain.use_cases.GetTopicsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch

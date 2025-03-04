@@ -35,6 +35,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -61,6 +62,9 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
     val scrollState = rememberScrollState()
     val state by viewModel.profileState.collectAsState()
 
+    LaunchedEffect (Unit){
+        viewModel.getProfile()
+    }
     when (val currentSate = state) {
         is RemoteObtainingUserProfile.Loading -> {
             CircularProgressIndicator()
@@ -71,9 +75,8 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(scrollState)
-                    .background(Color(0xFFF8F7FF)) // Светло-фиолетовый фон
+                    .background(Color(0xFFF8F7FF))
             ) {
-                // Хедер с градиентом
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -135,16 +138,14 @@ fun ProfileScreen(navController: NavController, viewModel: ProfileViewModel = hi
                         }
                     }
                 }
-
-                // Основной контент
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .offset(y = (-32).dp)
                         .padding(horizontal = 16.dp),
                     shape = RoundedCornerShape(24.dp),
-                    colors = CardDefaults.cardColors(Color.White), // Фиксированный белый цвет
-                    elevation = CardDefaults.cardElevation(12.dp) // Чуть усиленная тень
+                    colors = CardDefaults.cardColors(Color.White),
+                    elevation = CardDefaults.cardElevation(12.dp)
                 ) {
                     Column(
                         modifier = Modifier.padding(24.dp)
